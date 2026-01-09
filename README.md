@@ -1,40 +1,36 @@
-# BYU MOA Tour
-This application is designed to act as a self guided, interactive, audio tour for the BYU Museum of Art(MOA). While the project is entirely web based and can be navigated thusly, the end goal is to also provide QR codes next to the relevant artifacts at the museum to allow for easy, instant access. The content and information of the tour itself, as well as the audio recordings, are provided courtesy of Paige Griffiths from the MOA. 
-
-The tour features, in addition to the informative audio, various interactives such as user text input, color selection, voting (with persistent database to show culmaltive voting percentages), and others to help immerse the user in the exhibits. 
+# Bathroom Code Crowdsourcing App
+This website allows users to circumvent those who would try to keep them from using the bathroom with pesky key-code door locks, by crowd sourcing a database of bathroom door codes and making them available to users for free. It implents IP address location lookup and mapping API's to allow users to find bathroom codes near their location, or search for them by place name. User's that create accounts can also contribute to the project, allowing them to add codes to the database. Users that add lots of (accurate) codes will earn prestige, adding to their total score which can be seen on the leaderboard. 
 
 ## Deliverable 1: Project Specification
+
 ### Elevator pitch
-Have you ever endlessly debated with your friends about where to meet for lunch, or had your team bog down about an important decision that needs to be made? The Voting application makes it so a group of people can pull out their phones, clearly see the options, and pick their top three choices. As each user makes their choices the results are automatically tallied and displayed in realtime to all the other group members. Once everyone locks in their choices the group can move forward with confidence that the best option has been selected.
+Have you ever been out eating dinner, gotten up to go to the bathroom, only to find that the door is locked behind a keypad? Now you could go interrupt an employee who is busy trying to make orders during the dinner rush, becoming a bother to all the hungry people in line, or you could use (product name here) to avoid all that and find out the code on your own in seconds!
 
-Design
-Mock
+### Design
 
-Here is a sequence diagram that shows how to people would interact with the backend to vote.
-
-
-Key features
+### Key features
 Secure login over HTTPS
-Ability to select the question to decide
-Display of choices
-Ability to select, and change, top three choices
-Totals from all users displayed in realtime
-Ability for a user to lock in their top three
-Results are persistently stored
-Ability for admin to create and delete questions
-Technologies
+Ability to view a map localized to your location based on IP
+Localized lookup based on location from IP
+Ability to contribute codes and earn prestige for it
+Leaderboard of top contributers
+Lets users avoid talking to employees!
+Codes stored in persistent database, including old/outmoted codes
+
+
+### Technologies
 I am going to use the required technologies in the following ways:
 
-HTML - Uses correct HTML structure for application. Two HTML pages. One for login and one for voting. Hyperlinks to choice artifact.
+HTML - Uses correct HTML structure for application. Three HTML pages. One for login, one with the map for finding codes, and one for adding codes.
 CSS - Application styling that looks good on different screen sizes, uses good whitespace, color choice and contrast.
-React - Provides login, choice display, applying votes, display other users votes, and use of React for routing and components.
+React - Provides login, code display, code submission, user leaderboard, and use of React for routing and components.
 Service - Backend service with endpoints for:
 login
-retrieving choices
-submitting votes
+retrieving codes
+submitting codes
 retrieving vote status
 DB/Login - Store users, choices, and votes in database. Register and login users. Credentials securely stored in database. Can't vote unless authenticated.
-WebSocket - As each user votes, their votes are broadcast to all other users.
+WebSocket - Lets users add codes, their votes are broadcast to all other users.
 Deployment instructions
 Clone this repository to your development environment.
 
