@@ -1,10 +1,10 @@
-Voter
-This application serves as an example for the information you must provide in your Start Up README.md file for each phase of your development. You only need to fill in the section for the deliverable when you submit that deliverable in Canvas. This allows the TA to know what should be graded.
+# BYU MOA Tour
+This application is designed to act as a self guided, interactive, audio tour for the BYU Museum of Art(MOA). While the project is entirely web based and can be navigated thusly, the end goal is to also provide QR codes next to the relevant artifacts at the museum to allow for easy, instant access. The content and information of the tour itself, as well as the audio recordings, are provided courtesy of Paige Griffiths from the MOA. 
 
-The specification deliverable section defines what your application will do. The rest of the deliverable sections reference the rubric for the deliverable and tell where the functionality is in your application, or documents that you did not satisfy that part of the rubric.
+The tour features, in addition to the informative audio, various interactives such as user text input, color selection, voting (with persistent database to show culmaltive voting percentages), and others to help immerse the user in the exhibits. 
 
-Specification Deliverable
-Elevator pitch
+## Deliverable 1: Project Specification
+### Elevator pitch
 Have you ever endlessly debated with your friends about where to meet for lunch, or had your team bog down about an important decision that needs to be made? The Voting application makes it so a group of people can pull out their phones, clearly see the options, and pick their top three choices. As each user makes their choices the results are automatically tallied and displayed in realtime to all the other group members. Once everyone locks in their choices the group can move forward with confidence that the best option has been selected.
 
 Design
