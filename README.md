@@ -1,4 +1,4 @@
-# Bathroom Code Crowdsourcing App
+# FlushCode: Bathroom Code Crowdsourcing App
 This website allows users to circumvent those who would try to keep them from using the bathroom with pesky key-code door locks, by crowd sourcing a database of bathroom door codes and making them available to users for free. It implents IP address location lookup and mapping API's to allow users to find bathroom codes near their location, or search for them by place name. User's that create accounts can also contribute to the project, allowing them to add codes to the database. Users that add lots of codes will earn prestige, adding to their total score which can be seen on the leaderboard. 
 
 ## Deliverable 1: Project Specification
