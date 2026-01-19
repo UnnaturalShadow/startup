@@ -8,7 +8,7 @@ Have you ever been out eating dinner, gotten up to go to the bathroom, only to f
 
 ### Design
 
-![image](sketch.JPG)
+![image](images/sketch.JPG)
 
 ### Key features
 - Secure login over HTTPS
