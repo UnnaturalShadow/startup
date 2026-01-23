@@ -33,3 +33,17 @@ I am going to use the required technologies in the following ways:
   - retrieving prestige and leaderboard status
 - DB/Login - Store users, codes, and votes in database. Register and login users. Credentials securely stored in database. Can't submit codes unless authenticated.
 - WebSocket - Provides real-time updates from the backend to connected clients. When users submit new codes or earn prestige, leaderboard updates will be pushed instantly to all users without requiring a page refresh.
+
+## HTML Deliverable
+
+For this deliverable I built out the structure of my application using HTML.
+
+- [x] I completed the prerequisites for this deliverable (Simon deployed, GitHub link, Git commits)
+- [x] HTML pages - Five HTML page that represent the ability to login view codes, submit codes, view scoreboard, and read about the project.
+- [x] Proper HTML element usage, including body, main, header, footer, form, etc.
+- [x] Links - The login page automatically links back to the home page. The home page contains links to login, code submission, and about.
+- [x] Text - Text is included in small doses throughout, sufficient for this check box but otherwise minimal due to the nature of the application. 
+- [x] 3rd party API placeholder - I put a very lovely image of google maps where the maps api will go. As for the IP api, since that will simply take info and pass it directly back to maps, I didn't include a visual placeholder for that, as it won't end up being visble. 
+- [x] Images - I have an image, its my placeholder map! I also made the little web icon be a toilet. 
+- [x] DB/Login - Input box and submit button for login. Another set of inputs and submit button for code submission.
+- [x] WebSocket - The scoreboard will keep a realtime tally of player reputation. 
