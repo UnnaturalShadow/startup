@@ -2,53 +2,42 @@ body {
   display: flex;
   flex-direction: column;
   min-width: 375px;
-}
-
-header {
-  flex: 0 80px;
-}
-
-main {
-  flex: 1 calc(100vh - 110px);
-  display: flex;
-  flex-direction: column;
-  align-items: center;
-  justify-content: space-around;
-}
-
-footer {
-  flex: 0 30px;
-}
-
-menu {
-  flex: 1;
-  display: flex;
-  /*  overwrite Bootstrap so the menu does not wrap */
-  flex-direction: row !important;
-  list-style: none;
-}
-
-.navbar-brand {
-  padding-left: 0.3em;
-  border-bottom: solid rgb(182, 182, 182) thin;
-}
-
-menu .nav-item {
-  padding: 0 0.3em;
+  font-family: 'Times New Roman', Times, serif;
+  background-color: black;
+  color: white;
 }
 
 footer a {
   float: right;
 }
 
-@media (max-height: 600px) {
-  header {
-    display: none;
-  }
-  footer {
-    display: none;
-  }
-  main {
-    flex: 1 100vh;
-  }
+a:link {
+    color: #6a5eff; /* Unvisited link color (bright blue) */
+    
+    text-decoration: underline;
 }
+
+a:visited {
+    color: #6a5eff; /* Visited link color (lighter purple for contrast) */
+}
+
+header {
+    z-index: 1002;
+    position: fixed;
+    top: 0;
+    left: 0;
+    right: 0;
+}
+
+.banner {
+    -webkit-touch-callout: none;
+    -webkit-user-select: none;
+    user-select: none;
+    white-space: nowrap;
+    color: var(--theme-text);
+    cursor: pointer;
+    margin: 0 8px;
+    font-size: 13px;
+    text-decoration: none
+}
+

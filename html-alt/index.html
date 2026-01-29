@@ -9,23 +9,36 @@
         <link rel = "icon" href = "favicon.ico" />
         <link rel="stylesheet" href="main.css" />
     </head>
-    <header>
-      <h1>RaidBuddy</h1>
+    <header class="banner">
+      <div class="left-content">
+        <h1>RaidBuddy</h1>
 
-      <!-- Navigation elements -->
-      <nav>
-        <menu>
-          <li class="nav-item"><a href="index.html">Home</a></li>
-          <li class="nav-item"><a href="login.html">Login</a></li>
-          <li class="nav-item"><a href="scores.html">Scores</a></li>
-          <li class="nav-item"><a href="code-submission.html">Code Submission</a></li>
-          <li class="nav-item"><a href="about.html">About</a></li>
-        </menu>
-      </nav>
+        <nav>
+          <menu>
+            <li class="nav-item"><a href="index.html">Home</a></li>
+            <li class="nav-item"><a href="scores.html">Scores</a></li>
+            <li class="nav-item"><a href="code-submission.html">Code Submission</a></li>
+            <li class="nav-item"><a href="about.html">About</a></li>
+          </menu>
+        </nav>
+      </div>
 
-      <!-- Since we don't have the ability to style we use old style HTML to give some visual formatting -->
+      <div class="right-content">
+        <!-- Logged out state -->
+        <a class="profile-button" href="login.html">Login</a>
+
+        <!-- Logged in state (example) -->
+        <!--
+        <div class="profile">
+          <span class="username">Joshua</span>
+          <img src="profile.png" alt="Profile" />
+        </div>
+        -->
+      </div>
+
       <hr />
     </header>
+
 
     <main>
         <h1>Welcome to RaidBuddy</h1>
@@ -35,7 +48,7 @@
 
     <footer>
       <hr />
-      <span class="text-reset">Joshua Decker</span>
+      <span class="text-reset">&copy; Joshua Decker 2026</span>
       <a href="https://github.com/unnaturalshadow/startup">GitHub</a>
     </footer>
   </body>
