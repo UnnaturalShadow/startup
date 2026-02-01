@@ -1,43 +1,137 @@
+/* ===== Page Layout ===== */
 body {
   display: flex;
   flex-direction: column;
   min-width: 375px;
-  font-family: 'Times New Roman', Times, serif;
-  background-color: black;
-  color: white;
+  min-height: 100vh;
+  margin: 0;
+  font-family: system-ui, sans-serif;
+}
+
+/* ===== Header ===== */
+header.banner {
+  display: flex;
+  justify-content: space-between; /* left vs right */
+  align-items: flex-start;        /* align top of header row */
+  padding: 0.5rem 1rem;
+  background-color: #111;
+  color: #fff;
+  flex: 0 0 auto;
+  min-height: 80px;
+}
+
+.left-content {
+  display: flex;
+  flex-direction: column; /* stack title above nav */
+  gap: 0.25rem;           /* space between h1 and menu */
+}
+
+.left-content h1 {
+  margin: 0;
+  font-size: 1.5rem;
+}
+
+nav menu {
+  display: flex;
+  flex-direction: row;
+  list-style: none;
+  padding: 0;
+  margin: 0;
+  gap: 0.75rem;
+}
+
+.right-content {
+  display: flex;
+  align-items: center;
+  flex-shrink: 0; /* keep login visible */
+}
+/* ===== Navigation ===== */
+nav menu {
+  display: flex;
+  flex-direction: row;
+  list-style: none;
+  padding: 0;
+  margin: 0;
+  gap: 0.75rem;
+}
+
+menu .nav-item a {
+  color: #ddd;
+  text-decoration: none;
+  padding: 0.3em 0.5em;
+}
+
+menu .nav-item a:hover {
+  color: #fff;
+  border-bottom: 1px solid #aaa;
+}
+
+/* ===== Right side (profile/login) ===== */
+.right-content {
+  display: flex;
+  align-items: center;
+}
+
+.profile-button {
+  color: #ddd;
+  text-decoration: none;
+  border: 1px solid #777;
+  padding: 0.3em 0.75em;
+  border-radius: 4px;
+}
+
+.profile-button:hover {
+  background-color: #222;
+  color: #fff;
+}
+
+/* ===== Main Content ===== */
+main {
+  flex: 1 calc(100vh - 110px);
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  justify-content: space-around;
+  padding: 1rem;
+  text-align: center;
+  background-color: #444;
+  color: #fff;
+}
+
+main img {
+  max-width: 100%;
+  height: auto;
+}
+
+/* ===== Footer ===== */
+footer {
+  flex: 0 0 30px;
+  display: flex;
+  align-items: center;
+  padding: 0 1rem;
+  background-color: #111;
+  color: #aaa;
+  border-top: 1px solid #555;
 }
 
 footer a {
-  float: right;
+  margin-left: auto;
+  color: #aaa;
+  text-decoration: none;
 }
 
-a:link {
-    color: #6a5eff; /* Unvisited link color (bright blue) */
-    
-    text-decoration: underline;
+footer a:hover {
+  color: #fff;
 }
 
-a:visited {
-    color: #6a5eff; /* Visited link color (lighter purple for contrast) */
-}
+/* ===== Small Height Handling ===== */
+@media (max-height: 600px) {
+  header {
+    display: none;
+  }
 
-header {
-    z-index: 1002;
-    position: fixed;
-    top: 0;
-    left: 0;
-    right: 0;
-}
-
-.banner {
-    -webkit-touch-callout: none;
-    -webkit-user-select: none;
-    user-select: none;
-    white-space: nowrap;
-    color: var(--theme-text);
-    cursor: pointer;
-    margin: 0 8px;
-    font-size: 13px;
-    text-decoration: none
+  main {
+    flex: 1 100vh;
+  }
 }
 
