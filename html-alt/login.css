@@ -11,8 +11,8 @@ body {
 /* ===== Header ===== */
 header.banner {
   display: flex;
-  justify-content: space-between; /* left vs right */
-  align-items: flex-start;        /* align top of header row */
+  justify-content: space-between;
+  align-items: flex-start;  /* aligns top of header row */
   padding: 0.5rem 1rem;
   background-color: #07004d;
   color: #fff;
@@ -20,10 +20,11 @@ header.banner {
   min-height: 80px;
 }
 
+/* Left side: title + nav stacked */
 .left-content {
   display: flex;
-  flex-direction: column; /* stack title above nav */
-  gap: 0.25rem;           /* space between h1 and menu */
+  flex-direction: column; /* stack title above menu */
+  gap: 0.25rem;
 }
 
 .left-content h1 {
@@ -40,36 +41,22 @@ nav menu {
   gap: 0.75rem;
 }
 
-.right-content {
-  display: flex;
-  align-items: center;
-  flex-shrink: 0; /* keep login visible */
-}
-/* ===== Navigation ===== */
-nav menu {
-  display: flex;
-  flex-direction: row;
-  list-style: none;
-  padding: 0;
-  margin: 0;
-  gap: 0.75rem;
-}
-
-menu .nav-item a {
+nav menu li a {
   color: #ddd;
   text-decoration: none;
-  padding: 0.3em 0.5em;
+  padding: 0.25em 0.5em;
 }
 
-menu .nav-item a:hover {
+nav menu li a:hover {
   color: #fff;
   border-bottom: 1px solid #aaa;
 }
 
-/* ===== Right side (profile/login) ===== */
+/* Right side login/profile */
 .right-content {
   display: flex;
   align-items: center;
+  flex-shrink: 0;
 }
 
 .profile-button {
@@ -91,16 +78,27 @@ main {
   display: flex;
   flex-direction: column;
   align-items: center;
-  justify-content: space-around;
+  justify-content: center;
   padding: 1rem;
   text-align: center;
   background-color: #343897;
   color: #fff;
 }
 
-main img {
-  max-width: 100%;
-  height: auto;
+main form {
+  display: flex;
+  flex-direction: column;
+  gap: 0.5rem;
+}
+
+main form div {
+  display: flex;
+  align-items: center;
+  gap: 0.25rem;
+}
+
+main input {
+  padding: 0.25rem 0.5rem;
 }
 
 /* ===== Footer ===== */
@@ -111,11 +109,10 @@ footer {
   padding: 0 1rem;
   background-color: #07004d;
   color: #aaa;
-  border-top: 1px solid #555;
+  justify-content: space-between;
 }
 
 footer a {
-  margin-left: auto;
   color: #aaa;
   text-decoration: none;
 }
@@ -126,12 +123,13 @@ footer a:hover {
 
 /* ===== Small Height Handling ===== */
 @media (max-height: 600px) {
-  header {
+  header.banner {
     display: none;
   }
-
+  footer {
+    display: none;
+  }
   main {
     flex: 1 100vh;
   }
 }
-
