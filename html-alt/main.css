@@ -1,4 +1,11 @@
-/* ===== Page Layout ===== */
+/* =========================
+   Global Layout
+   ========================= */
+
+* {
+  box-sizing: border-box;
+}
+
 body {
   display: flex;
   flex-direction: column;
@@ -6,24 +13,34 @@ body {
   min-height: 100vh;
   margin: 0;
   font-family: system-ui, sans-serif;
+  background-color: #343897;
+  color: #fff;
 }
 
-/* ===== Header ===== */
+a {
+  color: #fff;
+  text-decoration: underline;
+}
+
+/* =========================
+   Header (UNCHANGED FORMAT)
+   ========================= */
+
 header.banner {
   display: flex;
-  justify-content: space-between; /* left vs right */
-  align-items: flex-start;        /* align top of header row */
+  justify-content: space-between;
+  align-items: flex-start;
   padding: 0.5rem 1rem;
   background-color: #07004d;
   color: #fff;
-  flex: 0 0 auto;
+  flex-shrink: 0;
   min-height: 80px;
 }
 
 .left-content {
   display: flex;
-  flex-direction: column; /* stack title above nav */
-  gap: 0.25rem;           /* space between h1 and menu */
+  flex-direction: column;
+  gap: 0.25rem;
 }
 
 .left-content h1 {
@@ -31,45 +48,30 @@ header.banner {
   font-size: 1.5rem;
 }
 
-nav menu {
+nav ul {
   display: flex;
-  flex-direction: row;
+  flex-direction: row;   /* ← default, but be explicit */
   list-style: none;
   padding: 0;
   margin: 0;
   gap: 0.75rem;
 }
 
-.right-content {
-  display: flex;
-  align-items: center;
-  flex-shrink: 0; /* keep login visible */
-}
-/* ===== Navigation ===== */
-nav menu {
-  display: flex;
-  flex-direction: row;
-  list-style: none;
-  padding: 0;
-  margin: 0;
-  gap: 0.75rem;
-}
-
-menu .nav-item a {
+.nav-item a {
   color: #ddd;
   text-decoration: none;
   padding: 0.3em 0.5em;
 }
 
-menu .nav-item a:hover {
+.nav-item a:hover {
   color: #fff;
   border-bottom: 1px solid #aaa;
 }
 
-/* ===== Right side (profile/login) ===== */
 .right-content {
   display: flex;
   align-items: center;
+  flex-shrink: 0;
 }
 
 .profile-button {
@@ -85,35 +87,79 @@ menu .nav-item a:hover {
   color: #fff;
 }
 
-/* ===== Main Content ===== */
-main {
-  flex: 1 calc(100vh - 110px);
+/* =========================
+   Main Content (REVISED)
+   ========================= */
+
+main.home {
+  flex: 1;
+
   display: flex;
   flex-direction: column;
-  align-items: center;
-  justify-content: space-around;
-  padding: 1rem;
+  gap: 2rem;
+
+  padding: 2rem 1rem;
   text-align: center;
-  background-color: #343897;
-  color: #fff;
 }
 
-a {
-  color: #fff;
-  text-decoration: underline;
+/* Intro text */
+
+.intro {
+  max-width: 800px;
+  margin: 0 auto;
 }
 
-main img {
-  max-width: 100%;
-  height: auto;
+.intro h2 {
+  margin-top: 0;
 }
 
-/* ===== Footer ===== */
+.intro p {
+  line-height: 1.5;
+  color: #ddd;
+}
+
+/* Raids section */
+
+.raids {
+  max-width: 1000px;
+  margin: 0 auto;
+}
+
+.raid-list {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 1rem;
+  margin-top: 1rem;
+}
+
+/* Raid cards (flexbox resizing showcase) */
+
+.raid-card {
+  flex: 1 1 220px;
+  padding: 1rem;
+
+  background-color: #07004d;
+  border-radius: 8px;
+  font-weight: 500;
+
+  box-shadow: 0 2px 6px rgba(0, 0, 0, 0.25);
+}
+
+.raid-card:hover {
+  background-color: #0b0070;
+  transform: translateY(-2px);
+}
+
+/* =========================
+   Footer (UNCHANGED FORMAT)
+   ========================= */
+
 footer {
-  flex: 0 0 30px;
+  flex-shrink: 0;
   display: flex;
   align-items: center;
   padding: 0 1rem;
+  height: 30px;
   background-color: #07004d;
   color: #aaa;
   border-top: 1px solid #555;
@@ -129,14 +175,16 @@ footer a:hover {
   color: #fff;
 }
 
-/* ===== Small Height Handling ===== */
+/* =========================
+   Small Height Handling
+   ========================= */
+
 @media (max-height: 600px) {
-  header {
+  header.banner {
     display: none;
   }
 
-  main {
-    flex: 1 100vh;
+  main.home {
+    flex: 1;
   }
 }
-
