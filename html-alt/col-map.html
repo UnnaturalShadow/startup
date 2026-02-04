@@ -1,0 +1,83 @@
+<!DOCTYPE html>
+<html lang = "en">
+    <head>
+        <meta charset=""UTF-8" />
+        <meta name = "viewport" content = "width = device-width, inistial-scale1.0" />
+        <title>
+            RaidBuddy
+        </title>
+        <link rel = "icon" href = "favicon.ico" />
+        <link rel="stylesheet" href="main.css" />
+    </head>
+    <header class="banner">
+  <div class="left-content">
+    <h1>RaidBuddy</h1>
+    <nav>
+      <ul>
+        <li class="nav-item"><a href="index.html">Home</a></li>
+        <li class="nav-item"><a href="col-map.html">Collaborative Maps</a></li>
+        <li class="nav-item"><a href="code-submission.html">Code Submission</a></li>
+        <li class="nav-item"><a href="about.html">About</a></li>
+      </ul>
+    </nav>
+  </div>
+
+  <div class="right-content">
+    <a class="profile-button" href="login.html">Login</a>
+  </div>
+</header>
+    <main class="col-map">
+
+        <!-- Selection controls -->
+        <section class="map-controls">
+            <label>
+            Raid:
+            <select>
+                <option>Vault of Glass</option>
+                <option>King’s Fall</option>
+            </select>
+            </label>
+
+            <label>
+            Encounter:
+            <select>
+                <option>Encounter 1</option>
+                <option>Encounter 2</option>
+            </select>
+            </label>
+
+            <button>Load Map</button>
+        </section>
+
+        <!-- Map display -->
+        <section class="map-area">
+            <div class="map-placeholder">
+            Map will appear here
+            </div>
+        </section>
+
+        <!-- Collaboration -->
+        <section class="collab">
+            <div class="share">
+            <h3>Share This Map</h3>
+            <button>Generate Code</button>
+            </div>
+
+            <div class="join">
+            <h3>Join a Map</h3>
+            <input type="text" placeholder="Enter code" />
+            <button>Join</button>
+            </div>
+        </section>
+
+    </main>
+
+
+  
+
+    <footer>
+      <span class="text-reset">&copy; Joshua Decker 2026</span>
+      <a href="https://github.com/unnaturalshadow/startup">GitHub</a>
+    </footer>
+  </body>
+</html>
