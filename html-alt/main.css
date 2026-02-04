@@ -98,6 +98,11 @@ main {
   color: #fff;
 }
 
+a {
+  color: #fff;
+  text-decoration: underline;
+}
+
 main img {
   max-width: 100%;
   height: auto;
