@@ -175,16 +175,3 @@ footer a:hover {
   color: #fff;
 }
 
-/* =========================
-   Small Height Handling
-   ========================= */
-
-@media (max-height: 600px) {
-  header.banner {
-    display: none;
-  }
-
-  main.home {
-    flex: 1;
-  }
-}
