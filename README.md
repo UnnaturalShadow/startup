@@ -31,14 +31,28 @@ I am going to use the required technologies in the following ways:
 - **Database** – Store authentication data (if added later) and persistent application data, such as map states, annotations, and user-generated guides.  
 - **WebSocket** – Real-time information pushed from the backend to the frontend, enabling live collaborative annotation of raid maps and instant updates for all connected users.
 
-## HTML Deliverable
+## 🚀 HTML deliverable  
+For this deliverable I did the following. I checked the box [x] and added a description for things I completed.
 
-For this deliverable, I built the structure of the web application using HTML:
+- [x] HTML pages – Created multiple pages: `index.html` (Login placeholder), `play.html` (API analytics display), `scores.html` (player stats placeholder), and `about.html`. Each page has a header, main, and footer structure.  
+- [x] Proper HTML element usage – Used semantic elements including `header`, `footer`, `main`, `nav`, `form`, `label`, `input`, `button`, and `a`. The login form uses proper input types and labels for accessibility.  
+- [x] Links – Footer and header allow navigation between pages.  
+- [x] Text – Pages include descriptive text placeholders for analytics, player stats, and information about the app.  
+- [x] 3rd party API placeholder – `play.html` has a structured area for Bungie API analytics such as recent activities, kills, deaths, and completion times.  
+- [x] Images – About page has a placeholder image for branding or app info.  
+- [x] Login placeholder – `index.html` has a minimal login form with username/password fields and a submit button.  
+- [x] DB data placeholder – `scores.html` will eventually display player activity data fetched from the API.  
+- [x] WebSocket placeholder – `play.html` has a live activity section where dynamic updates will appear in the future.
 
-- [x] Completed prerequisites (Simon deployed, GitHub link, Git commits)  
-- [x] **HTML pages** – Home page, about page, collaborative map page, one completed raid guide page (Vault of Glass), and placeholders for additional guides.  
-- [x] **Proper HTML element usage** – `body`, `main`, `header`, `footer`, `nav`, `section`, and form elements where appropriate.  
-- [x] **Navigation links** – Home page links to all guides, maps, and about. Map page allows joining or creating a collaborative map.  
-- [x] **Text** – Guides have clearly structured steps and sections. About page credits external creators (e.g., SoteriaAugur).  
-- [x] **Images / Placeholders** – Map placeholders and guide illustrations are included.  
-- [x] **WebSocket** – Ready for collaborative map updates to be pushed in real-time.
+
+## 🚀 CSS deliverable  
+For this deliverable I did the following. I checked the box [x] and added a description for things I completed.
+
+- [x] Header, footer, and main content body – Created a common CSS file `main.css` for global layout, including flexbox for vertical and horizontal alignment. Footer is pinned to the bottom with proper styling.  
+- [x] Navigation elements – Styled header navigation links consistently across all pages, including hover effects and active states.  
+- [x] Responsive to window resizing – Flexbox and responsive width settings ensure all pages adapt to mobile and desktop views.  
+- [x] Application elements – Used flex containers and gap/padding to align forms, analytics cards, and page sections.  
+- [x] Application text content – Applied `system-ui` font with color schemes consistent across all pages (#fff text on #343897 background).  
+- [x] Application images – About page image is centered and responsive.  
+- [x] Login page styling – Minimal login page uses consistent colors, borders, hover effects, and form alignment with the rest of the site theme.  
+- [x] API analytics page styling – `play.html` has placeholder cards styled with flexbox, background colors, and consistent typography ready for dynamic API data.
