@@ -1,49 +1,49 @@
-# FlushCode: Bathroom Code Crowdsourcing App
-This website allows users to circumvent those who would try to keep them from using the bathroom with pesky key-code door locks, by crowd sourcing a database of bathroom door codes and making them available to users for free. It implents IP address location lookup and mapping API's to allow users to find bathroom codes near their location, or search for them by place name. User's that create accounts can also contribute to the project, allowing them to add codes to the database. Users that add lots of codes will earn prestige, adding to their total score which can be seen on the leaderboard. 
+# RaidBuddy: Destiny 2 Raid Guide and Collaborative Map Tool
+
+RaidBuddy is a web application designed to help Destiny 2 players plan, coordinate, and execute raids. It provides interactive raid maps, step-by-step guides, and collaborative annotation features so fireteams can strategize in real-time. Users can view detailed guides for each raid, see maps for specific encounters, and work together to annotate those maps to explain tactics and positions.
 
 ## Deliverable 1: Project Specification
 
 ### Elevator pitch
-Have you ever been out eating dinner, gotten up to go to the bathroom, only to find that the door is locked behind a keypad? Now you could go interrupt an employee who is busy trying to make orders during the dinner rush, becoming a bother to all the hungry people in line, or you could use FlushCode to avoid all that and find out the code on your own in seconds!
+Ever tried tackling a Destiny 2 raid without a clear plan and ended up wiped multiple times? RaidBuddy is here to help. With interactive guides, annotated maps, and collaborative drawing features, fireteams can plan strategies, assign roles, and visualize encounter mechanics — all in one place. Whether you’re learning the raid for the first time or coordinating a top-tier team, RaidBuddy makes raids easier, faster, and more fun.
 
 ### Design
 
-![image](html-files/images/sketch.JPG)
+![image](html-files/images/sketch.JPG)  
+*Placeholder sketch for layout of home page, map page, and guide pages.*
 
 ### Key features
-- Secure login over HTTPS
-- Ability to view a map localized to your location based on IP
-- Localized lookup based on location from IP
-- Ability to contribute codes and earn prestige for it
-- Leaderboard of top contributers
-- Lets users avoid talking to employees!
-- Codes stored in persistent database, including old/outmoted codes
-
+- Detailed written guides for all Destiny 2 raids  
+- Interactive maps for raid encounters  
+- Collaborative real-time annotations via WebSockets  
+- Ability to create or join a map with a code  
+- Integration with Bungie API for analytics on your fireteam’s raids  
+- Responsive design that works on desktops, tablets, and mobile devices  
+- Clear navigation between home, guides, maps, analytics, and about pages  
 
 ### Technologies
 I am going to use the required technologies in the following ways:
 
-- HTML - Provides the base HTML structure to load the application. Three HTML pages. One for login, one with the map for finding codes, and one for adding codes.
-- CSS - Application styling that looks good on different screen sizes using responsive layouts, uses good whitespace, color choice and contrast, as well as simple animations. 
-- React - Provides frontend for login, code display, code submission, user leaderboard. React state and hooks will be used to handle user authentication state, form input, and dynamic updates to displayed data.
-- Service - Backend service with endpoints for:
-  - login
-  - retrieving codes
-  - submitting codes
-  - retrieving prestige and leaderboard status
-- DB/Login - Store users, codes, and votes in database. Register and login users. Credentials securely stored in database. Can't submit codes unless authenticated.
-- WebSocket - Provides real-time updates from the backend to connected clients. When users submit new codes or earn prestige, leaderboard updates will be pushed instantly to all users without requiring a page refresh.
+- **HTML** – Provides the base structure for all pages: home, about, guide pages, collaborative maps, and analytics.  
+- **CSS** – Ensures responsive layouts, good spacing, readable typography, consistent color palette (using purples/blues to match Destiny theme), and subtle hover/interactive effects.  
+- **React** – Handles dynamic parts of the front-end like switching between raid guides, updating maps with real-time annotations, and managing UI state for collaborative tools.  
+- **WebSocket** – Provides real-time updates for collaborative maps. Users can draw or annotate live on the raid map and see other players’ updates instantly.  
+- **Backend service** – Provides endpoints for:  
+  - Creating and joining collaborative maps via codes  
+  - Saving and retrieving map annotations  
+  - Fetching raid guide content  
+  - Connecting to Bungie API for analytics  
+- **Bungie API** – Provides analytics on player activity, raid completions, and encounter stats. Data can be visualized in an analytics page.  
+- **Database / Persistence** – Stores map states, annotations, and user-generated guides. User authentication may be added later for private maps.  
 
 ## HTML Deliverable
 
-For this deliverable I built out the structure of my application using HTML.
+For this deliverable, I built the structure of the web application using HTML:
 
-- [x] I completed the prerequisites for this deliverable (Simon deployed, GitHub link, Git commits)
-- [x] HTML pages - Five HTML page that represent the ability to login view codes, submit codes, view scoreboard, and read about the project.
-- [x] Proper HTML element usage, including body, main, header, footer, form, etc.
-- [x] Links - The login page automatically links back to the home page. The home page contains links to login, code submission, and about.
-- [x] Text - Text is included in small doses throughout, sufficient for this check box but otherwise minimal due to the nature of the application. 
-- [x] 3rd party API placeholder - I put a very lovely image of google maps where the maps api will go. As for the IP api, since that will simply take info and pass it directly back to maps, I didn't include a visual placeholder for that, as it won't end up being visble. 
-- [x] Images - I have an image, its my placeholder map! I also made the little web icon be a toilet. 
-- [x] DB/Login - Input box and submit button for login. Another set of inputs and submit button for code submission.
-- [x] WebSocket - The scoreboard will keep a realtime tally of player reputation. 
+- [x] Completed prerequisites (Simon deployed, GitHub link, Git commits)  
+- [x] **HTML pages** – Home page, about page, collaborative map page, one completed raid guide page (Vault of Glass), and placeholders for additional guides.  
+- [x] **Proper HTML element usage** – `body`, `main`, `header`, `footer`, `nav`, `section`, and form elements where appropriate.  
+- [x] **Navigation links** – Home page links to all guides, maps, and about. Map page allows joining or creating a collaborative map.  
+- [x] **Text** – Guides have clearly structured steps and sections. About page credits external creators (e.g., SoteriaAugur).  
+- [x] **Images / Placeholders** – Map placeholders and guide illustrations are included.  
+- [x] **WebSocket** – Ready for collaborative map updates to be pushed in real-time.
