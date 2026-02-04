@@ -24,17 +24,12 @@ Ever tried tackling a Destiny 2 raid without a clear plan and ended up wiped mul
 ### Technologies
 I am going to use the required technologies in the following ways:
 
-- **HTML** – Provides the base structure for all pages: home, about, guide pages, collaborative maps, and analytics.  
-- **CSS** – Ensures responsive layouts, good spacing, readable typography, consistent color palette (using purples/blues to match Destiny theme), and subtle hover/interactive effects.  
-- **React** – Handles dynamic parts of the front-end like switching between raid guides, updating maps with real-time annotations, and managing UI state for collaborative tools.  
-- **WebSocket** – Provides real-time updates for collaborative maps. Users can draw or annotate live on the raid map and see other players’ updates instantly.  
-- **Backend service** – Provides endpoints for:  
-  - Creating and joining collaborative maps via codes  
-  - Saving and retrieving map annotations  
-  - Fetching raid guide content  
-  - Connecting to Bungie API for analytics  
-- **Bungie API** – Provides analytics on player activity, raid completions, and encounter stats. Data can be visualized in an analytics page.  
-- **Database / Persistence** – Stores map states, annotations, and user-generated guides. User authentication may be added later for private maps.  
+- **HTML** – Basic structural and organizational elements for all pages, including home, about, raid guides, collaborative maps, and analytics pages.  
+- **CSS** – Styling and animating the application, including responsive layouts, color schemes, spacing, typography, hover effects, and interactive elements like raid tiles and buttons.  
+- **React** – Componentization, routing, and user reactivity using the React framework and JavaScript. React will handle switching between raid guides, rendering collaborative map components, and updating UI in response to real-time events.  
+- **Web service** – Endpoints provided by the backend service that support application-specific functionality, such as creating or joining collaborative maps, saving and retrieving annotations, and fetching raid guide content. Also includes integration with a third-party API: [Bungie API](https://www.bungie.net/platform) for player analytics and raid stats.  
+- **Database** – Store authentication data (if added later) and persistent application data, such as map states, annotations, and user-generated guides.  
+- **WebSocket** – Real-time information pushed from the backend to the frontend, enabling live collaborative annotation of raid maps and instant updates for all connected users.
 
 ## HTML Deliverable
 
