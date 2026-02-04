@@ -1,0 +1,114 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8" />
+<meta name="viewport" content="width=device-width, initial-scale=1.0" />
+<title>RaidBuddy - Player Analytics</title>
+<link rel="stylesheet" href="anal.css" />
+</head>
+
+<body>
+<header class="banner">
+  <div class="left-content">
+    <h1>RaidBuddy</h1>
+    <nav>
+      <ul>
+        <li class="nav-item"><a href="index.html">Home</a></li>
+        <li class="nav-item"><a href="col-map.html">Maps</a></li>
+        <li class="nav-item"><a href="analytics.html">Analytics</a></li>
+        <li class="nav-item"><a href="about.html">About</a></li>
+      </ul>
+    </nav>
+  </div>
+
+  <div class="right-content">
+    <a class="profile-button" href="login.html">Login</a>
+  </div>
+</header>
+
+<main class="guide">
+    <h1>Player Activity Analytics</h1>
+    <p>This page will display player stats fetched from the Bungie API.</p>
+
+    <!-- Player Profile -->
+    <section>
+        <h2>Player Profile</h2>
+        <p>Name: <span class="placeholder">--</span></p>
+        <p>Light Level: <span class="placeholder">--</span></p>
+        <p>Class: <span class="placeholder">--</span></p>
+        <p>Last Login: <span class="placeholder">--</span></p>
+    </section>
+
+    <!-- Recent Activities -->
+    <section>
+        <h2>Recent Activities</h2>
+        <table>
+            <thead>
+                <tr>
+                    <th>Activity Name</th>
+                    <th>Date</th>
+                    <th>Duration</th>
+                    <th>Kills</th>
+                    <th>Deaths</th>
+                    <th>Score</th>
+                    <th>Completion</th>
+                </tr>
+            </thead>
+            <tbody>
+                <tr>
+                    <td>--</td>
+                    <td>--</td>
+                    <td>--</td>
+                    <td>--</td>
+                    <td>--</td>
+                    <td>--</td>
+                    <td>--</td>
+                </tr>
+                <tr>
+                    <td>--</td>
+                    <td>--</td>
+                    <td>--</td>
+                    <td>--</td>
+                    <td>--</td>
+                    <td>--</td>
+                    <td>--</td>
+                </tr>
+                <tr>
+                    <td>--</td>
+                    <td>--</td>
+                    <td>--</td>
+                    <td>--</td>
+                    <td>--</td>
+                    <td>--</td>
+                    <td>--</td>
+                </tr>
+            </tbody>
+        </table>
+    </section>
+
+    <!-- Overall Stats -->
+    <section>
+        <h2>Overall Stats</h2>
+        <ul>
+            <li>Total Activities: <span class="placeholder">--</span></li>
+            <li>Total Kills: <span class="placeholder">--</span></li>
+            <li>Total Deaths: <span class="placeholder">--</span></li>
+            <li>Average Kills per Activity: <span class="placeholder">--</span></li>
+            <li>Average Deaths per Activity: <span class="placeholder">--</span></li>
+            <li>Win Rate: <span class="placeholder">--%</span></li>
+        </ul>
+    </section>
+
+    <!-- Notes -->
+    <section>
+        <h2>Notes</h2>
+        <p>All stats are placeholders. Once connected to the Bungie API, this page will dynamically display real-time player activity and performance data.</p>
+    </section>
+</main>
+
+<footer>
+    <span class="text-reset">Joshua Decker</span><br />
+    <a href="https://github.com/unnaturalshadow/startup">GitHub</a>
+</footer>
+</body>
+</html>
