@@ -1,0 +1,240 @@
+/* =========================
+   GLOBAL STYLES
+   ========================= */
+* {
+  box-sizing: border-box;
+}
+
+body {
+  display: flex;
+  flex-direction: column;
+  min-width: 375px;
+  min-height: 100vh;
+  margin: 0;
+  font-family: system-ui, sans-serif;
+  background-color: #343897;
+  color: #fff;
+}
+
+a {
+  color: #fff;
+  text-decoration: underline;
+}
+
+/* =========================
+   HEADER (exactly like index)
+   ========================= */
+header.banner {
+  display: flex;
+  justify-content: space-between;
+  align-items: flex-start;
+  padding: 0.5rem 1rem;
+  background-color: #07004d;
+  color: #fff;
+  flex-shrink: 0;
+  min-height: 80px;
+}
+
+.left-content {
+  display: flex;
+  flex-direction: column;
+  gap: 0.25rem;
+}
+
+.left-content h1 {
+  margin: 0;
+  font-size: 1.5rem;
+}
+
+nav ul {
+  display: flex;
+  list-style: none;
+  padding: 0;
+  margin: 0;
+  gap: 0.75rem;
+}
+
+.nav-item a {
+  color: #ddd;
+  text-decoration: none;
+  padding: 0.3em 0.5em;
+}
+
+.nav-item a:hover {
+  color: #fff;
+  border-bottom: 1px solid #aaa;
+}
+
+.right-content {
+  display: flex;
+  align-items: center;
+  flex-shrink: 0;
+}
+
+.profile-button {
+  color: #ddd;
+  text-decoration: none;
+  border: 1px solid #777;
+  padding: 0.3em 0.75em;
+  border-radius: 4px;
+}
+
+.profile-button:hover {
+  background-color: #222;
+  color: #fff;
+}
+
+/* =========================
+   FOOTER (exactly like index)
+   ========================= */
+footer {
+  flex-shrink: 0;
+  display: flex;
+  align-items: center;
+  padding: 0 1rem;
+  height: 30px;
+  background-color: #07004d;
+  color: #aaa;
+  border-top: 1px solid #555;
+}
+
+footer a {
+  margin-left: auto;
+  color: #aaa;
+  text-decoration: none;
+}
+
+footer a:hover {
+  color: #fff;
+}
+
+/* =========================
+   MAIN CONTENT (col-map)
+   ========================= */
+main.col-map {
+  flex: 1;  /* grows to push footer down */
+  display: flex;
+  flex-direction: column;
+  gap: 2rem;
+  padding: 2rem 1rem;
+}
+
+/* ----- Selection Controls ----- */
+.map-controls {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 1rem;
+  align-items: center;
+  justify-content: center;
+}
+
+.map-controls label {
+  display: flex;
+  flex-direction: column;
+  font-weight: 500;
+  color: #ddd;
+}
+
+.map-controls select {
+  margin-top: 0.25rem;
+  padding: 0.3rem 0.5rem;
+  border-radius: 4px;
+  border: 1px solid #777;
+  background-color: #222;
+  color: #fff;
+}
+
+.map-controls button {
+  padding: 0.4rem 1rem;
+  border: none;
+  border-radius: 4px;
+  background-color: #07004d;
+  color: #fff;
+  cursor: pointer;
+}
+
+.map-controls button:hover {
+  background-color: #0b0070;
+}
+
+/* ----- Map Display ----- */
+.map-area {
+  flex: 1; /* expand to fill vertical space */
+  display: flex;
+  justify-content: center;
+  align-items: center;
+}
+
+.map-placeholder {
+  width: 100%;
+  max-width: 1000px;
+  height: 400px;
+  background-color: #1f1f70;
+  border-radius: 8px;
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  color: #ddd;
+  font-weight: 500;
+  text-align: center;
+  box-shadow: 0 2px 6px rgba(0,0,0,0.25);
+}
+
+/* ----- Collaboration Section ----- */
+.collab {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 2rem;
+  justify-content: center;
+}
+
+.collab .share,
+.collab .join {
+  background-color: #07004d;
+  padding: 1rem;
+  border-radius: 8px;
+  flex: 1 1 220px;
+  text-align: center;
+}
+
+.collab h3 {
+  margin-top: 0;
+  margin-bottom: 1rem;
+  color: #fff;
+}
+
+.collab input {
+  padding: 0.3rem 0.5rem;
+  border-radius: 4px;
+  border: 1px solid #777;
+  background-color: #222;
+  color: #fff;
+  width: 100%;
+  margin-bottom: 0.5rem;
+}
+
+.collab button {
+  padding: 0.4rem 1rem;
+  border: none;
+  border-radius: 4px;
+  background-color: #0b0070;
+  color: #fff;
+  cursor: pointer;
+}
+
+.collab button:hover {
+  background-color: #343897;
+}
+
+/* ----- Responsive Adjustments ----- */
+@media (max-width: 768px) {
+  .map-controls {
+    flex-direction: column;
+    align-items: stretch;
+  }
+
+  .collab {
+    flex-direction: column;
+    align-items: stretch;
+  }
+}
