@@ -150,6 +150,33 @@ main.home {
   transform: translateY(-2px);
 }
 
+main.about-page {
+  flex: 1;
+  padding: 2rem 1rem;
+  max-width: 900px;
+  margin: 0 auto;
+  color: #ddd;
+}
+
+main.about-page h1, main.about-page h3 {
+  color: #fff;
+}
+
+main.about-page a {
+  color: #fff;
+  text-decoration: underline;
+}
+
+main.about-page a:hover {
+  color: #ddd;
+}
+
+main.about-page .about-logo {
+  display: block;
+  margin: 0.5rem auto;
+  max-width: 750px;
+}
+
 /* =========================
    Footer (UNCHANGED FORMAT)
    ========================= */
