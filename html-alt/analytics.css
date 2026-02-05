@@ -1,6 +1,7 @@
 /* =========================
-   GLOBAL STYLES
+   Global Layout
    ========================= */
+
 * {
   box-sizing: border-box;
 }
@@ -13,7 +14,7 @@ body {
   margin: 0;
   font-family: system-ui, sans-serif;
   background-color: #343897;
-  color: #fff;
+  color: #eee;
 }
 
 a {
@@ -21,19 +22,8 @@ a {
   text-decoration: underline;
 }
 
-h1{
-  margin: 1rem;
-}
-
-h2{
-  margin: 1rem;
-}
-p{
-  margin: 1rem;
-}
-
 /* =========================
-   HEADER (same as index)
+   HEADER (exactly like index)
    ========================= */
 header.banner {
   display: flex;
@@ -60,7 +50,6 @@ header.banner {
 nav ul {
   display: flex;
   list-style: none;
-  flex-direction: row;  
   padding: 0;
   margin: 0;
   gap: 0.75rem;
@@ -97,7 +86,7 @@ nav ul {
 }
 
 /* =========================
-   FOOTER (same as index)
+   FOOTER (exactly like index)
    ========================= */
 footer {
   flex-shrink: 0;
@@ -121,73 +110,119 @@ footer a:hover {
 }
 
 /* =========================
-   RAID GUIDE MAIN CONTENT
+   Main Content
    ========================= */
-main.raid-guide {
-  flex: 1; /* grow to push footer down */
+
+main.guide {
+  flex: 1;
   padding: 2rem 1rem;
-  max-width: 900px;
+  width: 100%;
+}
+
+/* Wrap content in a container */
+main.guide .container {
+  max-width: 900px;  /* keeps content centered like about page */
   margin: 0 auto;
-}
-
-main.raid-guide h1 {
-  font-size: 2rem;
-  margin-bottom: 1.5rem;
-  text-align: center;
-  color: #fff;
-}
-
-main.raid-guide h2 {
-  font-size: 1.5rem;
-  margin-top: 2rem;
-  margin-bottom: 1rem;
-  border-bottom: 1px solid #555;
-  padding-bottom: 0.25rem;
-  color: #fff;
-}
-
-main.raid-guide ul {
-  margin-left: 1.5rem;
-  line-height: 1.6;
-  color: #ddd;
-}
-
-main.raid-guide li {
-  margin-bottom: 0.5rem;
-}
-
-/* Highlight important actions */
-main.raid-guide strong {
-  color: #fff;
-  font-weight: 700;
-}
-
-main.raid-guide .credits {
-  margin-top: 2rem;
-  text-align: center;
-  font-size: 0.9rem;
-  color: #ccc;
-}
-
-main.raid-guide .credits a {
-  color: #fff;
-  text-decoration: underline;
-}
-
-main.raid-guide .credits a:hover {
-  color: #ddd;
+  width: 100%;
 }
 
 /* =========================
-   RESPONSIVE ADJUSTMENTS
+   Sections
    ========================= */
-@media (max-width: 768px) {
-  main.raid-guide {
-    padding: 1rem;
+
+section {
+  background: #07004d;
+  border-radius: 10px;
+  padding: 1.5rem;
+  margin-bottom: 2rem;
+  box-shadow: 0 4px 10px rgba(0,0,0,0.5);
+}
+
+section h2 {
+  margin-top: 0;
+  margin-bottom: 1rem;
+  font-size: 1.4rem;
+  border-bottom: 2px solid #eee;
+  padding-bottom: 0.3rem;
+}
+
+/* =========================
+   Tables
+   ========================= */
+
+table {
+  width: 100%;
+  border-collapse: collapse;
+  margin-top: 1rem;
+  color: #eee;
+  display: block;       /* allow horizontal scroll on narrow screens */
+  overflow-x: auto;
+}
+
+thead th {
+  background-color: #07004d;
+  color: #fff;
+  padding: 0.75rem;
+  text-align: left;
+}
+
+tbody td {
+  padding: 0.6rem;
+  border-bottom: 1px solid #444;
+}
+
+/* =========================
+   Lists
+   ========================= */
+
+ul {
+  padding-left: 1.5rem;
+  text-align: left;
+}
+
+ul li {
+  margin-bottom: 0.5rem;
+}
+
+/* =========================
+   Placeholder Text
+   ========================= */
+
+.placeholder {
+  color: #888;
+  font-style: italic;
+}
+
+
+/* =========================
+   Responsive Header / Nav
+   ========================= */
+
+@media (max-width: 650px) {
+  header.banner {
+    flex-direction: column;  /* stack left + right content */
+    align-items: flex-start;
+    gap: 0.5rem;
+  }
+
+  .left-content,
+  .right-content {
+    width: 100%;
   }
 
   nav ul {
-    flex-direction: column;
-    gap: 0.5rem;
+    flex-direction: column;  /* stack nav links vertically */
+    width: 100%;
+    gap: 0.25rem;
+  }
+
+  .nav-item a {
+    display: block;
+    width: fit-content;
+    padding: 0.25em 0;
+  }
+
+  .profile-button {
+    margin-top: 0.25rem;
   }
 }
