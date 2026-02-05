@@ -156,6 +156,7 @@ main.raid-guide h2 {
   margin-bottom: 1rem;
   border-bottom: 1px solid #555;
   padding-bottom: 0.25rem;
+  font-family: 'Nitro Eagle', system-ui, sans-serif;
   color: #fff;
 }
 
@@ -163,6 +164,12 @@ main.raid-guide ul {
   margin-left: 1.5rem;
   line-height: 1.6;
   color: #ddd;
+}
+
+h3 
+{
+  font-family: 'Nitro Eagle', system-ui, sans-serif;
+  margin: 1rem;
 }
 
 main.raid-guide li {
