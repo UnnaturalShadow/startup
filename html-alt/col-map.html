@@ -1,91 +1,93 @@
 <!DOCTYPE html>
-<html lang = "en">
-    <head>
-        <meta charset=""UTF-8" />
-        <meta name = "viewport" content = "width = device-width, inistial-scale1.0" />
-        <title>
-            RaidBuddy
-        </title>
-        <link rel = "icon" href = "favicon.ico" />
-        <link rel="stylesheet" href="map.css" />
-    </head>
-    <header class="banner">
-  <div class="left-content">
-    <h1>RaidBuddy</h1>
-    <nav>
-      <ul>
-        <li class="nav-item"><a href="index.html">Home</a></li>
-        <li class="nav-item"><a href="col-map.html">Maps</a></li>
-        <li class="nav-item"><a href="analytics.html">Analytics</a></li>
-        <li class="nav-item"><a href="about.html">About</a></li>
-      </ul>
-    </nav>
-  </div>
+<html lang="en">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
 
-  <div class="right-content">
-    <a class="profile-button" href="login.html">Login</a>
-  </div>
-</header>
-    <main class="col-map">
+  <title>RaidBuddy</title>
 
-        <!-- Selection controls -->
-        <section class="map-controls">
-            <label>
-            Raid:
-            <select>
-                <option>Vault of Glass</option>
-                <option>King's Fall</option>
-                <option>Vow of the Desciple</option>
-                <option>Crota's End</option>
-                <option>Garden of Salvation</option>
-                <option>Deep Stone Crypt</option>
-            </select>
-            </label>
+  <link rel="icon" href="favicon.ico" />
+  <link rel="stylesheet" href="map.css" />
+</head>
 
-            <label>
-            Encounter:
-            <select>
-                <option>Encounter 1</option>
-                <option>Encounter 2</option>
-                <option>Encounter 3</option>
-                <option>Encounter 4</option>
-                <option>Encounter 5</option>
-                <option>Encounter 6</option>
-            </select>
-            </label>
+<body>
 
-            <button>Load Map</button>
-        </section>
+  <header class="banner">
+    <div class="left-content">
+      <h1>RaidBuddy</h1>
+      <nav>
+        <ul>
+          <li class="nav-item"><a href="index.html">Home</a></li>
+          <li class="nav-item"><a href="col-map.html">Maps</a></li>
+          <li class="nav-item"><a href="analytics.html">Analytics</a></li>
+          <li class="nav-item"><a href="about.html">About</a></li>
+        </ul>
+      </nav>
+    </div>
 
-        <!-- Map display -->
-        <section class="map-area">
-            <div class="map-placeholder">
-            <img src = "vog_map.png" alt="Collaborative Map Placeholder" />
-            </div>
-        </section>
+    <div class="right-content">
+      <a class="profile-button" href="login.html">Login</a>
+    </div>
+  </header>
 
-        <!-- Collaboration -->
-        <section class="collab">
-            <div class="share">
-            <h3>Share This Map</h3>
-            <button>Generate Code</button>
-            </div>
+  <main class="col-map">
 
-            <div class="join">
-            <h3>Join a Map</h3>
-            <input type="text" placeholder="Enter code" />
-            <button>Join</button>
-            </div>
-        </section>
+    <!-- Selection controls -->
+    <section class="map-controls">
+      <label>
+        Raid:
+        <select>
+          <option>Vault of Glass</option>
+          <option>King's Fall</option>
+          <option>Vow of the Disciple</option>
+          <option>Crota's End</option>
+          <option>Garden of Salvation</option>
+          <option>Deep Stone Crypt</option>
+        </select>
+      </label>
 
-    </main>
+      <label>
+        Encounter:
+        <select>
+          <option>Encounter 1</option>
+          <option>Encounter 2</option>
+          <option>Encounter 3</option>
+          <option>Encounter 4</option>
+          <option>Encounter 5</option>
+          <option>Encounter 6</option>
+        </select>
+      </label>
 
+      <button>Load Map</button>
+    </section>
 
-  
+    <!-- Map display -->
+    <section class="map-area">
+      <div class="map-placeholder">
+        <img src="vog_map.png" alt="Collaborative Map Placeholder" />
+      </div>
+    </section>
 
-    <footer>
-      <span class="text-reset">&copy; Joshua Decker 2026</span>
-      <a href="https://github.com/unnaturalshadow/startup">GitHub</a>
-    </footer>
-  </body>
+    <!-- Collaboration -->
+    <section class="collab">
+      <div class="share">
+        <h3>Share This Map</h3>
+        <button>Generate Code</button>
+      </div>
+
+      <div class="join">
+        <h3>Join a Map</h3>
+        <input type="text" placeholder="Enter code" />
+        <button>Join</button>
+      </div>
+    </section>
+
+  </main>
+
+  <footer>
+    <span>&copy; Joshua Decker 2026</span>
+    <a href="https://github.com/unnaturalshadow/startup">GitHub</a>
+  </footer>
+
+</body>
 </html>

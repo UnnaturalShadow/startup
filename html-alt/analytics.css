@@ -21,6 +21,14 @@ a {
   color: #fff;
   text-decoration: underline;
 }
+@font-face {
+  font-family: 'Nitro Eagle';
+  src:
+    url('Acquire.woff') format('woff');
+  font-weight: 700;
+  font-style: normal;
+  font-display: swap;
+}
 
 /* =========================
    HEADER (exactly like index)
@@ -33,7 +41,10 @@ header.banner {
   background-color: #07004d;
   color: #fff;
   flex-shrink: 0;
-  min-height: 80px;
+  min-height: 70px;
+  font-family: 'Nitro Eagle', system-ui, sans-serif;
+  font-size: 1.3rem;
+  
 }
 
 .left-content {
@@ -117,6 +128,11 @@ main.guide {
   flex: 1;
   padding: 2rem 1rem;
   width: 100%;
+  
+}
+
+main h1{
+  font-family: 'Nitro Eagle', system-ui, sans-serif;
 }
 
 /* Wrap content in a container */
@@ -144,6 +160,7 @@ section h2 {
   font-size: 1.4rem;
   border-bottom: 2px solid #eee;
   padding-bottom: 0.3rem;
+  font-family: 'Nitro Eagle', system-ui, sans-serif;
 }
 
 /* =========================

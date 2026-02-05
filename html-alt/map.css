@@ -1,5 +1,5 @@
 /* =========================
-   GLOBAL STYLES
+   Global Layout
    ========================= */
 * {
   box-sizing: border-box;
@@ -8,12 +8,12 @@
 body {
   display: flex;
   flex-direction: column;
-  min-width: 375px;
+  min-width: 0;
   min-height: 100vh;
   margin: 0;
   font-family: system-ui, sans-serif;
   background-color: #343897;
-  color: #fff;
+  color: #eee;
 }
 
 a {
@@ -21,8 +21,16 @@ a {
   text-decoration: underline;
 }
 
+@font-face {
+  font-family: 'Nitro Eagle';
+  src: url('Acquire.woff') format('woff');
+  font-weight: 700;
+  font-style: normal;
+  font-display: swap;
+}
+
 /* =========================
-   HEADER (exactly like index)
+   HEADER (responsive, fixed)
    ========================= */
 header.banner {
   display: flex;
@@ -32,13 +40,20 @@ header.banner {
   background-color: #07004d;
   color: #fff;
   flex-shrink: 0;
-  min-height: 80px;
+  min-height: 70px;
+  font-family: 'Nitro Eagle', system-ui, sans-serif;
+  font-size: 1.3rem;
+  width: 100%;
+  gap: 0.5rem;
+  flex-wrap: wrap; /* allow wrapping if needed */
 }
 
 .left-content {
   display: flex;
   flex-direction: column;
   gap: 0.25rem;
+  flex-shrink: 0;
+  min-width: 0;
 }
 
 .left-content h1 {
@@ -52,6 +67,9 @@ nav ul {
   padding: 0;
   margin: 0;
   gap: 0.75rem;
+  flex-wrap: nowrap;
+  white-space: nowrap;
+  /* overflow-x: auto; */
 }
 
 .nav-item a {
@@ -69,6 +87,7 @@ nav ul {
   display: flex;
   align-items: center;
   flex-shrink: 0;
+  margin-left: 1rem;
 }
 
 .profile-button {
@@ -85,12 +104,13 @@ nav ul {
 }
 
 /* =========================
-   FOOTER (exactly like index)
+   FOOTER
    ========================= */
 footer {
   flex-shrink: 0;
   display: flex;
   align-items: center;
+  justify-content: space-between;
   padding: 0 1rem;
   height: 30px;
   background-color: #07004d;
@@ -99,7 +119,6 @@ footer {
 }
 
 footer a {
-  margin-left: auto;
   color: #aaa;
   text-decoration: none;
 }
@@ -112,11 +131,12 @@ footer a:hover {
    MAIN CONTENT (col-map)
    ========================= */
 main.col-map {
-  flex: 1;  /* grows to push footer down */
+  flex: 1;
   display: flex;
   flex-direction: column;
   gap: 2rem;
   padding: 2rem 1rem;
+  min-width: 0;
 }
 
 /* ----- Selection Controls ----- */
@@ -133,6 +153,7 @@ main.col-map {
   flex-direction: column;
   font-weight: 500;
   color: #ddd;
+  font-family: 'Nitro Eagle', system-ui, sans-serif;
 }
 
 .map-controls select {
@@ -151,6 +172,7 @@ main.col-map {
   background-color: #07004d;
   color: #fff;
   cursor: pointer;
+  font-family: 'Nitro Eagle', system-ui, sans-serif;
 }
 
 .map-controls button:hover {
@@ -159,7 +181,7 @@ main.col-map {
 
 /* ----- Map Display ----- */
 .map-area {
-  flex: 1; /* expand to fill vertical space */
+  flex: 1;
   display: flex;
   justify-content: center;
   align-items: center;
@@ -168,10 +190,9 @@ main.col-map {
 .map-placeholder {
   width: 100%;
   max-width: 1000px;
-  /* remove fixed height */
   height: auto;
   border-radius: 8px;
-  overflow: hidden; /* clip any excess */
+  overflow: hidden;
   display: flex;
   justify-content: center;
   align-items: center;
@@ -181,8 +202,8 @@ main.col-map {
 .map-placeholder img {
   width: 100%;
   height: auto;
-  display: block; /* remove inline spacing */
-  object-fit: contain; /* scale to fit box */
+  display: block;
+  object-fit: contain;
 }
 
 /* ----- Collaboration Section ----- */
@@ -206,6 +227,7 @@ main.col-map {
   margin-top: 0;
   margin-bottom: 1rem;
   color: #fff;
+  font-family: 'Nitro Eagle', system-ui, sans-serif;
 }
 
 .collab input {
@@ -224,6 +246,7 @@ main.col-map {
   border-radius: 4px;
   background-color: #0b0070;
   color: #fff;
+  font-family: 'Nitro Eagle', system-ui, sans-serif;
   cursor: pointer;
 }
 
@@ -231,7 +254,37 @@ main.col-map {
   background-color: #343897;
 }
 
-/* ----- Responsive Adjustments ----- */
+/* ----- Responsive Header / Nav ----- */
+@media (max-width: 650px) {
+  header.banner {
+    flex-direction: column;
+    align-items: flex-start;
+    gap: 0.5rem;
+  }
+
+  .left-content,
+  .right-content {
+    width: 100%;
+  }
+
+  nav ul {
+    flex-direction: column;
+    width: 100%;
+    gap: 0.25rem;
+  }
+
+  .nav-item a {
+    display: block;
+    width: fit-content;
+    padding: 0.25em 0;
+  }
+
+  .profile-button {
+    margin-top: 0.25rem;
+  }
+}
+
+/* ----- Small Screens for Controls / Collab ----- */
 @media (max-width: 768px) {
   .map-controls {
     flex-direction: column;
