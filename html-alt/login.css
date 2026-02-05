@@ -1,58 +1,87 @@
-/* ===== Page Layout ===== */
+/* =========================
+   Global Layout
+   ========================= */
+* {
+  box-sizing: border-box;
+}
+
 body {
   display: flex;
   flex-direction: column;
-  min-width: 375px;
+  min-width: 0;  /* allows header/nav to shrink */
   min-height: 100vh;
   margin: 0;
   font-family: system-ui, sans-serif;
+  background-color: #343897;
+  color: #fff;
 }
 
-/* ===== Header ===== */
+a {
+  color: #fff;
+  text-decoration: underline;
+}
+
+/* =========================
+   Font Import (Local)
+   ========================= */
+@font-face {
+  font-family: 'Nitro Eagle';
+  src:
+    url('Acquire.woff') format('woff');
+  font-weight: 700;
+  font-style: normal;
+  font-display: swap;
+}
+
+/* =========================
+   Header (Responsive)
+   ========================= */
 header.banner {
   display: flex;
   justify-content: space-between;
-  align-items: flex-start;  /* aligns top of header row */
+  align-items: flex-start;
   padding: 0.5rem 1rem;
   background-color: #07004d;
   color: #fff;
-  flex: 0 0 auto;
-  min-height: 80px;
+  flex-shrink: 0;
+  min-height: 70px;
+  font-family: 'Nitro Eagle', system-ui, sans-serif;
+  font-size: 1.3rem;
 }
 
-/* Left side: title + nav stacked */
 .left-content {
   display: flex;
-  flex-direction: column; /* stack title above menu */
+  flex-direction: column;
   gap: 0.25rem;
 }
 
 .left-content h1 {
   margin: 0;
   font-size: 1.5rem;
+  font-family: 'Nitro Eagle', system-ui, sans-serif;
 }
 
-nav menu {
+nav ul {
   display: flex;
   flex-direction: row;
   list-style: none;
   padding: 0;
   margin: 0;
   gap: 0.75rem;
+  flex-wrap: wrap; /* prevents horizontal scroll */
 }
 
-nav menu li a {
+.nav-item a {
   color: #ddd;
   text-decoration: none;
-  padding: 0.25em 0.5em;
+  padding: 0.3em 0.5em;
 }
 
-nav menu li a:hover {
+.nav-item a:hover {
   color: #fff;
   border-bottom: 1px solid #aaa;
 }
 
-/* Right side login/profile */
 .right-content {
   display: flex;
   align-items: center;
@@ -72,19 +101,20 @@ nav menu li a:hover {
   color: #fff;
 }
 
-/* ===== Main Content ===== */
+/* =========================
+   Main Content
+   ========================= */
 main {
-  flex: 1 calc(100vh - 110px);
+  flex: 1;
   display: flex;
   flex-direction: column;
   align-items: center;
   justify-content: center;
   padding: 1rem;
   text-align: center;
-  background-color: #343897;
-  color: #fff;
 }
 
+/* Form layout */
 main form {
   display: flex;
   flex-direction: column;
@@ -101,15 +131,23 @@ main input {
   padding: 0.25rem 0.5rem;
 }
 
-/* ===== Footer ===== */
+main button {
+  font-family: 'Nitro Eagle', system-ui, sans-serif;
+}
+
+/* =========================
+   Footer
+   ========================= */
 footer {
-  flex: 0 0 30px;
+  flex-shrink: 0;
   display: flex;
   align-items: center;
+  justify-content: space-between;
   padding: 0 1rem;
+  height: 30px;
   background-color: #07004d;
   color: #aaa;
-  justify-content: space-between;
+  border-top: 1px solid #555;
 }
 
 footer a {
@@ -121,15 +159,51 @@ footer a:hover {
   color: #fff;
 }
 
-/* ===== Small Height Handling ===== */
+/* =========================
+   Responsive Header / Nav
+   ========================= */
+@media (max-width: 650px) {
+  header.banner {
+    flex-direction: column;  /* stack left + right content */
+    align-items: flex-start;
+    gap: 0.5rem;
+  }
+
+  .left-content,
+  .right-content {
+    width: 100%;
+  }
+
+  nav ul {
+    flex-direction: column;  /* stack nav links vertically */
+    width: 100%;
+    gap: 0.25rem;
+  }
+
+  .nav-item a {
+    display: block;
+    width: fit-content;
+    padding: 0.25em 0;
+  }
+
+  .profile-button {
+    margin-top: 0.25rem;
+  }
+}
+
+/* =========================
+   Small Height Handling
+   ========================= */
 @media (max-height: 600px) {
   header.banner {
     display: none;
   }
+
   footer {
     display: none;
   }
+
   main {
-    flex: 1 100vh;
+    flex: 1;
   }
 }
