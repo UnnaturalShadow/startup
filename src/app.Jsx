@@ -18,15 +18,15 @@ export default function App() {
             <h1>RaidBuddy</h1>
             <nav>
               <ul>
-                <li className="nav-item"><NavLink href="/">Home</NavLink></li>
-                <li className="nav-item"><NavLink href="col-map">Maps</NavLink></li>
-                <li className="nav-item"><NavLink href="analytics">Analytics</NavLink></li>
-                <li className="nav-item"><NavLink href="/about">About</NavLink></li>
+                <li className="nav-item"><NavLink to="/">Home</NavLink></li>
+                <li className="nav-item"><NavLink to="col-map">Maps</NavLink></li>
+                <li className="nav-item"><NavLink to="analytics">Analytics</NavLink></li>
+                <li className="nav-item"><NavLink to="/about">About</NavLink></li>
               </ul>
             </nav>
           </div>
           <div className="right-content">
-            <NavLink className="profile-button" href="login">Login</NavLink>
+            <NavLink className="profile-button" to="/login">Login</NavLink>
           </div>
         </header>
 
