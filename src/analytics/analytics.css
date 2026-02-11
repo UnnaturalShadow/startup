@@ -1,0 +1,75 @@
+/* =========================
+   Scoped to Analytics Page
+   ========================= */
+.guide-page {
+  flex: 1;
+  padding: 2rem 1rem;
+  max-width: 900px;
+  margin: 0 auto;
+  display: flex;
+  flex-direction: column;
+  gap: 2rem;
+  text-align: center;
+}
+
+/* Headers */
+.guide-page h1,
+.guide-page h2 {
+  font-family: 'Nitro Eagle', system-ui, sans-serif;
+}
+
+.guide-page h2 {
+  margin-top: 0;
+  margin-bottom: 1rem;
+  font-size: 1.4rem;
+  border-bottom: 2px solid #eee;
+  padding-bottom: 0.3rem;
+}
+
+/* Sections */
+.guide-page section {
+  background: #07004d;
+  border-radius: 10px;
+  padding: 1.5rem;
+  box-shadow: 0 4px 10px rgba(0,0,0,0.5);
+}
+
+/* Tables */
+.guide-page .table-wrapper {
+  overflow-x: auto;
+}
+
+.guide-page table {
+  width: 100%;
+  border-collapse: collapse;
+  margin-top: 1rem;
+  color: #eee;
+}
+
+.guide-page thead th {
+  background-color: #07004d;
+  color: #fff;
+  padding: 0.75rem;
+  text-align: left;
+}
+
+.guide-page tbody td {
+  padding: 0.6rem;
+  border-bottom: 1px solid #444;
+}
+
+/* Lists */
+.guide-page ul {
+  padding-left: 1.5rem;
+  text-align: left;
+}
+
+.guide-page ul li {
+  margin-bottom: 0.5rem;
+}
+
+/* Placeholder Text */
+.guide-page .placeholder {
+  color: #888;
+  font-style: italic;
+}
