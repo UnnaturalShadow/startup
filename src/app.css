@@ -1,23 +1,5 @@
-.body {
-  display: flex;
-  flex-direction: column;
-  min-width: 375px;
-}
-
 /* =========================
-   Font Import (Logo)
-   ========================= */
-@font-face {
-  font-family: 'Nitro Eagle';
-  src:
-    url('Acquire.woff') format('woff');
-  font-weight: 700;
-  font-style: normal;
-  font-display: swap;
-}
-
-/* =========================
-   Global Layout
+   Global Styles
    ========================= */
 * {
   box-sizing: border-box;
@@ -26,11 +8,10 @@
 body {
   display: flex;
   flex-direction: column;
-  min-width: 0;  /* allows header to shrink */
-  min-height: 100vh;
+  min-height: 100vh; /* always fills viewport */
   margin: 0;
   font-family: system-ui, sans-serif;
-  background-color: #343897;
+  background-color: #343897; /* blue background */
   color: #fff;
 }
 
@@ -40,16 +21,25 @@ a {
 }
 
 /* =========================
-   Header (Responsive & Fixed)
+   Font Import
+   ========================= */
+@font-face {
+  font-family: 'Nitro Eagle';
+  src: url('Acquire.woff') format('woff');
+  font-weight: 700;
+  font-style: normal;
+  font-display: swap;
+}
+
+/* =========================
+   Header
    ========================= */
 header.banner {
   display: flex;
   justify-content: space-between;
   align-items: flex-start;
   padding: 0.5rem 1rem;
-  background-color: #07004d;
-  color: #fff;
-  flex-shrink: 0;
+  background-color: #07004d; /* dark header */
   min-height: 70px;
   font-family: 'Nitro Eagle', system-ui, sans-serif;
   font-size: 1.3rem;
@@ -64,18 +54,15 @@ header.banner {
 header.banner h1 {
   margin: 0;
   font-size: 1.5rem;
-  /* letter-spacing: 1px; */
-  font-family: 'Nitro Eagle', system-ui, sans-serif;
 }
 
 nav ul {
   display: flex;
-  flex-direction: row;
+  flex-wrap: wrap;
   list-style: none;
   padding: 0;
   margin: 0;
   gap: 0.75rem;
-  flex-wrap: wrap; /* prevents horizontal scroll */
 }
 
 .nav-item a {
@@ -92,7 +79,6 @@ nav ul {
 .right-content {
   display: flex;
   align-items: center;
-  flex-shrink: 0;
 }
 
 .profile-button {
@@ -109,46 +95,49 @@ nav ul {
 }
 
 /* =========================
-   Main Content
+   Main Pages
    ========================= */
+main {
+  flex: 1 0 auto; /* grow to fill space between header/footer */
+  padding: 2rem 1rem;
+  max-width: 900px;
+  margin: 0 auto;
+  background-color: transparent; /* inherit body blue */
+  text-align: center; /* horizontally center text */
+  display: flex;
+  flex-direction: column;
+  justify-content: flex-start; /* align content at top of main */
+}
+
 main.home {
   flex: 1;
   display: flex;
   flex-direction: column;
   gap: 2rem;
   padding: 2rem 1rem;
-  text-align: center;
+  text-align: center; /* centers text horizontally */
+  /* do NOT add justify-content: center */
 }
 
-.intro {
-  max-width: 800px;
-  margin: 0 auto;
-}
-
-.intro h2 {
-  margin-top: 0;
+main h1, main h2, main h3 {
   font-family: 'Nitro Eagle', system-ui, sans-serif;
+  color: #fff;
 }
 
-.intro p {
-  line-height: 1.5;
-  color: #ddd;
+/* Center sections inside main */
+main section {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  justify-content: center;
 }
 
-.raids {
-  max-width: 1000px;
-  margin: 0 auto;
-}
-
-.raids h2 {
-  font-family: 'Nitro Eagle', system-ui, sans-serif;
-}
-
+/* Raids section */
 .raid-list {
   display: flex;
   flex-wrap: wrap;
   gap: 1rem;
-  margin-top: 1rem;
+  justify-content: center; /* center raid cards horizontally */
 }
 
 .raid-card {
@@ -158,6 +147,9 @@ main.home {
   border-radius: 8px;
   font-weight: 500;
   box-shadow: 0 2px 6px rgba(0,0,0,0.25);
+  transition: all 0.2s;
+  text-decoration: none;
+  color: #fff;
 }
 
 .raid-card:hover {
@@ -165,36 +157,16 @@ main.home {
   transform: translateY(-2px);
 }
 
-main.about-page {
-  flex: 1;
-  padding: 2rem 1rem;
-  max-width: 900px;
-  margin: 0 auto;
-  color: #ddd;
-}
-
-main.about-page h1, main.about-page h3 {
-  color: #fff;
-  font-family: 'Nitro Eagle', system-ui, sans-serif;
-}
-
-main.about-page a {
-  color: #fff;
-  text-decoration: underline;
-}
-
-main.about-page a:hover {
-  color: #ddd;
-}
-
-main.about-page .about-logo {
+/* About page logo */
+.about-logo {
   display: block;
-  margin: 0.5rem auto;
-  max-width: 750px;
+  margin: 1.5rem auto;
+  max-width: 700px;
+  width: 100%;
 }
 
 /* =========================
-   Footer (Pinned Bottom)
+   Footer
    ========================= */
 footer {
   flex-shrink: 0;
@@ -202,7 +174,7 @@ footer {
   align-items: center;
   padding: 0 1rem;
   height: 30px;
-  background-color: #07004d;
+  background-color: #07004d; /* dark footer */
   color: #aaa;
   border-top: 1px solid #555;
 }
@@ -222,7 +194,7 @@ footer a:hover {
    ========================= */
 @media (max-width: 650px) {
   header.banner {
-    flex-direction: column;  /* stack left + right content */
+    flex-direction: column;
     align-items: flex-start;
     gap: 0.5rem;
   }
@@ -233,7 +205,7 @@ footer a:hover {
   }
 
   nav ul {
-    flex-direction: column;  /* stack nav links vertically */
+    flex-direction: column;
     width: 100%;
     gap: 0.25rem;
   }
