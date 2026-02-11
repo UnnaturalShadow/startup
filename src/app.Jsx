@@ -2,20 +2,16 @@ import React from 'react';
 import 'bootstrap/dist/css/bootstrap.min.css';
 import './app.css';
 import { BrowserRouter, NavLink, Route, Routes } from 'react-router-dom';
-
-// Pages
 import { About } from './about/about';
 import { Home } from './home/home';
-// import { Home } from './home/home';
-// import { Maps } from './maps/maps';
-// import { Analytics } from './analytics/analytics';
-// import { Login } from './login/login';
+import { Analytics} from './analytics/analytics';
+// import { Play } from './play/play';
+// import { Scores } from './scores/scores';
 
 export default function App() {
   return (
     <BrowserRouter>
-      <div className="body text-light">
-        {/* Header */}
+      <div className="app-wrapper">
         <header className="banner">
           <div className="left-content">
             <h1>RaidBuddy</h1>
@@ -28,25 +24,23 @@ export default function App() {
               </ul>
             </nav>
           </div>
+
           <div className="right-content">
             <NavLink className="profile-button" to="/login">Login</NavLink>
           </div>
         </header>
 
-        {/* Routes */}
-        <main className="flex-grow-1">
+        <main>
           <Routes>
-            {/* <Route path="/" element={<Home />} /> */}
             <Route path="/" element={<Home />} />
+            {/* <Route path="/play" element={<Play />} /> */}
+            {/* <Route path="/scores" element={<Scores />} /> */}
             <Route path="/about" element={<About />} />
-            {/* <Route path="/col-map" element={<Maps />} /> */}
-            {/* <Route path="/analytics" element={<Analytics />} /> */}
-            {/* <Route path="/login" element={<Login />} /> */}
             <Route path="*" element={<NotFound />} />
+            <Route path="/analytics" element={<Analytics />} />
           </Routes>
         </main>
 
-        {/* Footer */}
         <footer>
           <span className="text-reset">&copy; Joshua Decker 2026</span>
           <a href="https://github.com/unnaturalshadow/startup">GitHub</a>
@@ -56,12 +50,6 @@ export default function App() {
   );
 }
 
-// NotFound Component (inline for simplicity)
 function NotFound() {
-  return (
-    <main className="container-fluid bg-secondary text-center p-5">
-      <h2>404: Page Not Found</h2>
-      <p>Return to sender. Address unknown.</p>
-    </main>
-  );
+  return <div className="container-fluid text-center">404: Page not found</div>;
 }
