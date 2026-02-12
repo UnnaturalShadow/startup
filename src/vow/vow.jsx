@@ -1,32 +1,10 @@
-<!DOCTYPE html>
-<html lang="en">
-<head>
-    <meta charset="UTF-8" />
-    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
-    <title>RaidBuddy - Vow of the Disciple</title>
-    <link rel="icon" href="images/favicon.ico" />
-    <link rel="stylesheet" href="vog.css" />
-</head>
-<header class="banner">
-  <div class="left-content">
-    <h1>RaidBuddy</h1>
-    <nav>
-      <ul>
-        <li class="nav-item"><a href="index.html">Home</a></li>
-        <li class="nav-item"><a href="col-map.html">Maps</a></li>
-        <li class="nav-item"><a href="analytics.html">Analytics</a></li>
-        <li class="nav-item"><a href="about.html">About</a></li>
-      </ul>
-    </nav>
-  </div>
+import "../guide.css";
+import React from 'react';
 
-  <div class="right-content">
-    <a class="profile-button" href="login.html">Login</a>
-  </div>
-</header>
-
-<main class="guide-page">
-    <h1>Vow of the Disciple</h1>
+export function Vow() {
+  return (
+    <main className="raid-guide">
+      <h1>Vow of the Disciple</h1>
 
     <section>
         <h2>Rhulk, Disciple of the Witness</h2>
@@ -154,13 +132,18 @@
         </ul>
     </section>
 
-    <section>
-        <p>Guide content courtesy of <a href="https://youtube.com/@soteriaaugur?si=tgIqXwQuYepCH4_5" target="_blank">SoteriaAugur</a> for guide creation.</p>
-    </section>
-</main>
-
-<footer>
-  <span class="text-reset">Joshua Decker</span>
-  <br />
-  <a href="https://github.com/unnaturalshadow/startup">GitHub</a>
-</footer>
+      <section className="credits">
+        <p>
+          Guide content courtesy of{" "}
+          <a
+            href="https://youtube.com/@soteriaaugur?si=tgIqXwQuYepCH4_5"
+            target="_blank"
+            rel="noopener noreferrer"
+          >
+            SoteriaAugur
+          </a>
+        </p>
+      </section>
+    </main>
+  );
+}

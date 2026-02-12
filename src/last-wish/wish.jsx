@@ -1,33 +1,9 @@
-<!DOCTYPE html>
-<html lang="en">
-<head>
-    <meta charset="UTF-8" />
-    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
-    <title>RaidBuddy - Last Wish Guide</title>
-    <link rel="icon" href="images/favicon.ico" />
-    <link rel="stylesheet" href="vog.css" />
-</head>
+import "../guide.css";
+import React from 'react';
 
-<body>
-<header class="banner">
-  <div class="left-content">
-    <h1>RaidBuddy</h1>
-    <nav>
-      <ul>
-        <li class="nav-item"><a href="index.html">Home</a></li>
-        <li class="nav-item"><a href="col-map.html">Maps</a></li>
-        <li class="nav-item"><a href="analytics.html">Analytics</a></li>
-        <li class="nav-item"><a href="about.html">About</a></li>
-      </ul>
-    </nav>
-  </div>
-
-  <div class="right-content">
-    <a class="profile-button" href="login.html">Login</a>
-  </div>
-</header>
-
-<main class="guide">
+export function Wish() {
+  return (
+    <main className="raid-guide">
     <h1>Last Wish</h1>
 
     <h2>Divalian Mists</h2>
@@ -94,13 +70,18 @@
         <li>Chests appear on stairs; mission complete</li>
     </ul>
 
-    <p>Guide content courtesy of <a href="https://youtube.com/@soteriaaugur?si=tgIqXwQuYepCH4_5" target="_blank">SoteriaAugur</a>.</p>
-</main>
-
-<footer>
-    <span class="text-reset">Joshua Decker</span>
-    <br />
-    <a href="https://github.com/unnaturalshadow/startup">GitHub</a>
-</footer>
-</body>
-</html>
+      <section className="credits">
+        <p>
+          Guide content courtesy of{" "}
+          <a
+            href="https://youtube.com/@soteriaaugur?si=tgIqXwQuYepCH4_5"
+            target="_blank"
+            rel="noopener noreferrer"
+          >
+            SoteriaAugur
+          </a>
+        </p>
+      </section>
+    </main>
+  );
+}

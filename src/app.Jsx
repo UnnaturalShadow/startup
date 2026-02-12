@@ -8,8 +8,11 @@ import { Analytics } from './analytics/analytics';
 import { Login } from './login/login';
 import { ColMap } from './col-map/col-map';
 import { Vog } from './vog/vog';
-// import { Play } from './play/play';
-// import { Scores } from './scores/scores';
+import { Vow } from './vow/vow';
+import { Wish } from './last-wish/wish';
+import { Garden } from './garden/garden';
+import { King } from './kings-fall/king';
+import { DSC } from './dsc/dsc';
 
 export default function App() {
   return (
@@ -43,6 +46,11 @@ export default function App() {
             <Route path="/analytics" element={<Analytics />} />
             <Route path="/login" element={<Login />} />
             <Route path="/vog" element={<Vog />} />
+            <Route path="/vow" element={<Vow />} />
+            <Route path="/wish" element={<Wish />} />
+            <Route path="/garden" element={<Garden />} />
+            <Route path="/king" element={<King />} />
+            <Route path="/dsc" element={<DSC />} />
           </Routes>
         </main>
 
