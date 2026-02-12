@@ -7,6 +7,7 @@ import { Home } from './home/home';
 import { Analytics } from './analytics/analytics';
 import { Login } from './login/login';
 import { ColMap } from './col-map/col-map';
+import { Vog } from './vog/vog';
 // import { Play } from './play/play';
 // import { Scores } from './scores/scores';
 
@@ -41,6 +42,7 @@ export default function App() {
             <Route path="*" element={<NotFound />} />
             <Route path="/analytics" element={<Analytics />} />
             <Route path="/login" element={<Login />} />
+            <Route path="/vog" element={<Vog />} />
           </Routes>
         </main>
 
