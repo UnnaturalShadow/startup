@@ -6,6 +6,7 @@ import { About } from './about/about';
 import { Home } from './home/home';
 import { Analytics } from './analytics/analytics';
 import { Login } from './login/login';
+import { ColMap } from './col-map/col-map';
 // import { Play } from './play/play';
 // import { Scores } from './scores/scores';
 
@@ -19,7 +20,7 @@ export default function App() {
             <nav>
               <ul>
                 <li className="nav-item"><NavLink to="/">Home</NavLink></li>
-                <li className="nav-item"><NavLink to="/col-map">Maps</NavLink></li>
+                <li className="nav-item"><NavLink to="/maps">Maps</NavLink></li>
                 <li className="nav-item"><NavLink to="/analytics">Analytics</NavLink></li>
                 <li className="nav-item"><NavLink to="/about">About</NavLink></li>
               </ul>
@@ -34,7 +35,7 @@ export default function App() {
         <main>
           <Routes>
             <Route path="/" element={<Home />} />
-            {/* <Route path="/play" element={<Play />} /> */}
+            <Route path="/maps" element={<ColMap />} />
             {/* <Route path="/scores" element={<Scores />} /> */}
             <Route path="/about" element={<About />} />
             <Route path="*" element={<NotFound />} />
