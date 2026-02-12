@@ -27,7 +27,7 @@ a {
 @font-face {
   font-family: 'Nitro Eagle';
   src:
-    url('Acquire.woff') format('woff');
+    url('/Acquire.woff') format('woff');
   font-weight: 700;
   font-style: normal;
   font-display: swap;
