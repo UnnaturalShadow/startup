@@ -4,7 +4,8 @@ import './app.css';
 import { BrowserRouter, NavLink, Route, Routes } from 'react-router-dom';
 import { About } from './about/about';
 import { Home } from './home/home';
-import { Analytics} from './analytics/analytics';
+import { Analytics } from './analytics/analytics';
+import { Login } from './login/login';
 // import { Play } from './play/play';
 // import { Scores } from './scores/scores';
 
@@ -38,6 +39,7 @@ export default function App() {
             <Route path="/about" element={<About />} />
             <Route path="*" element={<NotFound />} />
             <Route path="/analytics" element={<Analytics />} />
+            <Route path="/login" element={<Login />} />
           </Routes>
         </main>
 
