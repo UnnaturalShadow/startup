@@ -20,10 +20,10 @@ export function Home() {
         <div className="raid-list">
           <NavLink to="/vog" className="raid-card">Vault of Glass</NavLink>
           <NavLink to="/vow" className="raid-card">Vow of the Disciple</NavLink>
-          <NavLink to="/kings-fall" className="raid-card">King's Fall</NavLink>
-          <NavLink to="/last-wish" className="raid-card">Last Wish</NavLink>
-          <NavLink to="/garden-of-salvation" className="raid-card">Garden of Salvation</NavLink>
-          <NavLink to="/deep-stone-crypt" className="raid-card">Deep Stone Crypt</NavLink>
+          <NavLink to="/king" className="raid-card">King's Fall</NavLink>
+          <NavLink to="/wish" className="raid-card">Last Wish</NavLink>
+          <NavLink to="/garden" className="raid-card">Garden of Salvation</NavLink>
+          <NavLink to="/dsc" className="raid-card">Deep Stone Crypt</NavLink>
         </div>
       </section>
     </main>
