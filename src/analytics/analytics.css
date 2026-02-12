@@ -1,30 +1,30 @@
 /* =========================
-   Scoped to Analytics Page
+   Analytics Page Styles
    ========================= */
 
+/* Use same flow as original */
 .guide-page {
-  flex: 1;
   padding: 2rem 1rem;
+  width: 100%;
+}
+
+/* Wrap content in a container to limit width */
+.guide-page .container {
   max-width: 900px;
   margin: 0 auto;
-  display: flex;
-  flex-direction: column;
-  gap: 2rem;
-  text-align: left; /* align content left for lists and tables */
-  box-sizing: border-box;
+  width: 100%;
 }
 
 /* Headers */
 .guide-page h1,
 .guide-page h2 {
   font-family: 'Nitro Eagle', system-ui, sans-serif;
-  color: #fff;
 }
 
 .guide-page h1 {
-  text-align: center;
   font-size: 2rem;
   margin-bottom: 1.5rem;
+  text-align: center; /* page title */
 }
 
 .guide-page h2 {
@@ -33,32 +33,32 @@
   font-size: 1.4rem;
   border-bottom: 2px solid #eee;
   padding-bottom: 0.3rem;
+  color: #fff;
 }
 
 /* Sections */
 .guide-page section {
-  width: 100%;               /* full width of container */
   background: #07004d;
   border-radius: 10px;
   padding: 1.5rem;
+  margin-bottom: 2rem;
   box-shadow: 0 4px 10px rgba(0,0,0,0.5);
-  flex-shrink: 0;
+
+  width: 100%;      /* fill container */
+  max-width: 100%;  /* prevent overflow */
+  min-width: 0;     /* allow shrinking inside flex/grid */
   box-sizing: border-box;
-  display: flex;
-  flex-direction: column;
-  gap: 1rem;
 }
 
 /* Tables */
-.guide-page .table-wrapper {
-  overflow-x: auto;
-}
-
 .guide-page table {
   width: 100%;
   border-collapse: collapse;
   margin-top: 1rem;
   color: #eee;
+  display: block;       /* allow horizontal scroll */
+  overflow-x: auto;
+  max-width: 100%;      /* prevent forcing section wider */
 }
 
 .guide-page thead th {
@@ -76,6 +76,7 @@
 /* Lists */
 .guide-page ul {
   padding-left: 1.5rem;
+  text-align: left;
 }
 
 .guide-page ul li {
@@ -105,42 +106,9 @@
   color: #ddd;
 }
 
-/* =========================
-   Responsive Adjustments
-   ========================= */
+/* Responsive adjustments */
 @media (max-width: 768px) {
   .guide-page {
     padding: 1rem;
-    gap: 1.5rem;
-  }
-
-  .guide-page section {
-    padding: 1rem;
-  }
-
-  .guide-page h2 {
-    font-size: 1.2rem;
-  }
-
-  .guide-page table {
-    font-size: 0.9rem;
-  }
-}
-
-@media (max-width: 480px) {
-  .guide-page h1 {
-    font-size: 1.6rem;
-  }
-
-  .guide-page h2 {
-    font-size: 1.1rem;
-  }
-
-  .guide-page section {
-    padding: 0.8rem;
-  }
-
-  .guide-page table {
-    font-size: 0.85rem;
   }
 }
