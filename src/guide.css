@@ -5,7 +5,6 @@
   box-sizing: border-box;
 }
 
-
 @font-face {
   font-family: 'Nitro Eagle';
   src: url('Acquire.woff') format('woff');
@@ -30,21 +29,13 @@ a {
   text-decoration: underline;
 }
 
-h1{
-  margin: 1rem;
-  font-family: 'Nitro Eagle', system-ui, sans-serif;
-}
-
-h2{
-  margin: 1rem;
-  font-family: 'Nitro Eagle', system-ui, sans-serif;
-}
-p{
-  margin: 1rem;
+h1, h2, h3, p, ul, li {
+  margin: 0;
+  padding: 0;
 }
 
 /* =========================
-   HEADER (same as index)
+   HEADER
    ========================= */
 header.banner {
   display: flex;
@@ -110,7 +101,7 @@ nav ul {
 }
 
 /* =========================
-   FOOTER (same as index)
+   FOOTER
    ========================= */
 footer {
   flex-shrink: 0;
@@ -137,51 +128,61 @@ footer a:hover {
    RAID GUIDE MAIN CONTENT
    ========================= */
 main.raid-guide {
-  flex: 1; /* grow to push footer down */
+  flex: 1;
   padding: 2rem 1rem;
   max-width: 900px;
   margin: 0 auto;
+  display: block;
+  text-align: left;
 }
 
+/* Headings */
 main.raid-guide h1 {
+  font-family: 'Nitro Eagle', system-ui, sans-serif;
   font-size: 2rem;
   margin-bottom: 1.5rem;
-  text-align: center;
+  text-align: center; /* keep page title centered */
   color: #fff;
 }
 
 main.raid-guide h2 {
+  font-family: 'Nitro Eagle', system-ui, sans-serif;
   font-size: 1.5rem;
   margin-top: 2rem;
   margin-bottom: 1rem;
   border-bottom: 1px solid #555;
   padding-bottom: 0.25rem;
-  font-family: 'Nitro Eagle', system-ui, sans-serif;
   color: #fff;
 }
 
+main.raid-guide h3 {
+  font-family: 'Nitro Eagle', system-ui, sans-serif;
+  margin: 1rem 0;
+}
+
+/* Lists */
 main.raid-guide ul {
   margin-left: 1.5rem;
   line-height: 1.6;
   color: #ddd;
 }
 
-h3 
-{
-  font-family: 'Nitro Eagle', system-ui, sans-serif;
-  margin: 1rem;
-}
-
 main.raid-guide li {
   margin-bottom: 0.5rem;
 }
 
-/* Highlight important actions */
 main.raid-guide strong {
   color: #fff;
   font-weight: 700;
 }
 
+/* Sections */
+main.raid-guide section {
+  margin-bottom: 2rem;
+  text-align: left;
+}
+
+/* Credits */
 main.raid-guide .credits {
   margin-top: 2rem;
   text-align: center;
