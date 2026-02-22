@@ -141,6 +141,29 @@ main button {
   align-items: center;
 }
 
+.button-group button {
+  font-family: 'Nitro Eagle', system-ui, sans-serif;
+
+  background-color: #07004d;
+  color: #fff;
+  border: 2px solid #ffffff33;
+  padding: 0.4rem 0.75rem;
+  border-radius: 6px;
+  cursor: pointer;
+  transition: all 0.2s ease;
+}
+
+.button-group button:hover {
+  background-color: #ffffff;
+  color: #07004d;
+}
+
+/* .button-group button:disabled {
+  background-color: #555;
+  color: #aaa;
+  cursor: not-allowed;
+} */
+
 
 /* =========================
    Responsive Header / Nav

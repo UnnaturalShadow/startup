@@ -1,45 +1,44 @@
-import React from "react";
-import { useNavigate } from "react-router-dom";
-import "./login.css";
+import React from 'react';
+import './login.css';
+
+import { AuthState } from './authState';
+import { Unauthenticated } from './unauthenticated';
+import { Authenticated } from './authenticated';
 
 export function Login() {
-  const navigate = useNavigate();
+  const [userName, setUserName] = React.useState(
+    localStorage.getItem('userName') || ''
+  );
 
-  function handleSubmit(e) {
-    e.preventDefault();
+  const [authState, setAuthState] = React.useState(
+    userName ? AuthState.Authenticated : AuthState.Unauthenticated
+  );
 
-    // Temporary behavior — just redirect to home
-    navigate("/");
+  function handleAuthChange(newUserName, newAuthState) {
+    setUserName(newUserName);
+    setAuthState(newAuthState);
   }
 
   return (
     <main className="login-page">
-      <form className="login-form" onSubmit={handleSubmit}>
-        <h1>Login</h1>
-
-        <div className="input-group">
-          <input
-            type="text"
-            placeholder="your@email.com"
-            required
-          />
-        </div>
-
-        <div className="input-group">
-          <input
-            type="password"
-            placeholder="password"
-            required
-          />
-        </div>
-
-        <div className="button-group">
-          <button type="submit">Login</button>
-          <button type="button" onClick={() => navigate("/")}>
-            Register
-          </button>
-        </div>
-      </form>
+      {authState === AuthState.Authenticated ? (
+        <Authenticated
+          userName={userName}
+          onLogout={() =>
+            handleAuthChange('', AuthState.Unauthenticated)
+          }
+        />
+      ) : (
+        <Unauthenticated
+          userName={userName}
+          onLogin={(loginUserName) =>
+            handleAuthChange(
+              loginUserName,
+              AuthState.Authenticated
+            )
+          }
+        />
+      )}
     </main>
   );
 }
