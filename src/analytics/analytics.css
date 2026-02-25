@@ -50,15 +50,20 @@
   box-sizing: border-box;
 }
 
-/* Tables */
 .guide-page table {
-  width: 100%;
   border-collapse: collapse;
   margin-top: 1rem;
   color: #eee;
-  display: block;       /* allow horizontal scroll */
-  overflow-x: auto;
-  max-width: 100%;      /* prevent forcing section wider */
+  width: auto;           /* Let table size naturally */
+}
+
+.table-wrapper {
+  overflow-x: auto;      /* Scroll wrapper instead */
+}
+
+.recent-activities table {
+  margin-left: auto;
+  margin-right: auto;
 }
 
 .guide-page thead th {
@@ -81,6 +86,25 @@
 
 .guide-page ul li {
   margin-bottom: 0.5rem;
+}
+/* Center Analytics Content */
+.recent-activities {
+  text-align: center;
+}
+
+.recent-activities table {
+  margin-left: auto;
+  margin-right: auto;
+}
+
+.overall-stats {
+  text-align: center;
+}
+
+.overall-stats ul {
+  list-style-position: inside;
+  padding-left: 0;
+  text-align: center;
 }
 
 /* Placeholder Text */
@@ -111,4 +135,35 @@
   .guide-page {
     padding: 1rem;
   }
+}
+
+/* button */
+/* Default (valid) button */
+.guide-page button {
+  background-color: #0b0070;   /* blue */
+  color: white;
+  border: none;
+  padding: 0.6rem 1.2rem;
+  border-radius: 6px;
+  cursor: pointer;
+  transition: background-color 0.2s ease, transform 0.1s ease;
+}
+
+/* Hover (only when enabled) */
+.guide-page button:not(:disabled):hover {
+  background-color: #0b0070;
+  transform: translateY(-1px);
+}
+
+/* Active click */
+.guide-page button:not(:disabled):active {
+  transform: translateY(0);
+}
+
+/* Disabled (invalid state) */
+.guide-page button:disabled {
+  background-color: #555;
+  color: #aaa;
+  cursor: not-allowed;
+  opacity: 0.7;
 }
