@@ -296,3 +296,13 @@ main.col-map {
     align-items: stretch;
   }
 }
+
+
+.map-canvas-controls {
+  display: flex;
+  justify-content: center; /* center horizontally */
+  align-items: center;     /* center vertically if needed */
+  flex-wrap: wrap;         /* wrap on small screens */
+  gap: 1rem;
+  margin-bottom: 8px;
+}
