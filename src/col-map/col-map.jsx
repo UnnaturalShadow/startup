@@ -187,7 +187,14 @@ export function ColMap() {
     };
     localStorage.setItem("sharedMaps", JSON.stringify(savedMaps));
     setShareCode(code);
-    alert(`Share this code: ${code}`);
+  };
+
+  // --- Copy code to clipboard ---
+  const handleCopyCode = () => {
+    if (!shareCode) return;
+    navigator.clipboard.writeText(shareCode).then(() => {
+      //alert("Code copied!"); // optional small notification
+    });
   };
 
   // --- Join Map ---
@@ -202,7 +209,6 @@ export function ColMap() {
     setSelectedEncounter(encounter);
     setLines(savedLines);
     setUndoneLines([]);
-    alert("Map loaded!");
   };
 
   return (
@@ -253,7 +259,17 @@ export function ColMap() {
         <div className="share">
           <h3>Share This Map</h3>
           <button onClick={handleGenerateCode}>Generate Code</button>
-          {shareCode && <p>Code: {shareCode}</p>}
+          {shareCode && (
+            <div style={{ marginTop: "0.5rem" }}>
+              <span style={{ fontWeight: "bold" }}>Code: {shareCode}</span>
+              <button
+                style={{ marginLeft: "8px" }}
+                onClick={handleCopyCode}
+              >
+                Copy
+              </button>
+            </div>
+          )}
         </div>
 
         <div className="join">
