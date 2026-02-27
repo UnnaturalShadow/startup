@@ -90,3 +90,10 @@ Navigation links in the header allow seamless transitions between pages without 
   - The Map page contains structural placeholders for future WebSocket-based real-time collaboration.
   - The Analytics page contains structured placeholders for Bungie API data.
 
+## React Phase 2: Interactivity
+
+For this deliverable I implemented client-side interactivity using React so that the application fully works for a single user. I also added placeholders and mocked functionality for future backend integration.
+
+- [x] I completed the prerequisites for this deliverable (Simon deployed, GitHub link, Git commits)
+- [x] All functionality implemented or mocked out – Users can select a map, draw on it, generate a join code, and join an existing session to view the same drawing. Multiplayer functionality is mocked using localStorage. The analytics page fetches and displays dummy data.
+- [x] Hooks – Used useState for UI state management, useEffect for canvas initialization and image loading side effects, and useRef for persistent canvas references.
