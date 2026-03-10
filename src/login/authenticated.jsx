@@ -1,25 +1,29 @@
-import React from 'react';
-import { useNavigate } from 'react-router-dom';
+import React from "react";
+import { useNavigate } from "react-router-dom";
 
 export function Authenticated({ userName, onLogout }) {
   const navigate = useNavigate();
 
   async function handleLogout() {
+    const sessionId = localStorage.getItem("sessionId");
+    if (!sessionId) {
+      alert("You are not logged in");
+      return;
+    }
+
     try {
-      // Call the backend logout endpoint
       const res = await fetch("http://localhost:5000/logout", {
         method: "POST",
         headers: { "Content-Type": "application/json" },
-        body: JSON.stringify({ email: userName }),
+        body: JSON.stringify({ sessionId }),
       });
 
-      if (!res.ok) {
-        const body = await res.json();
-        throw new Error(body.message || "Logout failed");
-      }
+      const data = await res.json();
+      if (!res.ok) throw new Error(data.message || "Logout failed");
 
-      // Clear local storage and update UI state
+      // Clear session
       localStorage.removeItem("userName");
+      localStorage.removeItem("sessionId");
       onLogout();
     } catch (err) {
       alert(err.message);
@@ -30,8 +34,9 @@ export function Authenticated({ userName, onLogout }) {
     <div className="login-form">
       <h1>Welcome</h1>
       <p>{userName}</p>
+
       <div className="button-group">
-        <button onClick={() => navigate('/')}>Go to Home</button>
+        <button onClick={() => navigate("/")}>Go to Home</button>
         <button onClick={handleLogout}>Logout</button>
       </div>
     </div>
