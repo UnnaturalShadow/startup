@@ -1,75 +1,46 @@
+// /service/index.js
 import express from "express";
-import fetch from "node-fetch"; // or global fetch in Node 18+
-import dotenv from "dotenv";
-dotenv.config();
+import cors from "cors";
+import bcrypt from "bcryptjs";
 
 const app = express();
-const PORT = 4000;
-const API_KEY = process.env.BUNGIE_API_KEY;
-const BASE = "https://www.bungie.net/Platform";
+const port = 5000;
 
+app.use(cors());
 app.use(express.json());
 
-// Search player across all platforms
-app.get("/api/player/:username", async (req, res) => {
-  const { username } = req.params;
-  const membershipTypes = [1, 2, 3]; // Xbox, PSN, Steam
+// In-memory store (replace with DB later)
+const users = new Map(); // key=email, value={ email, passwordHash }
 
-  try {
-    for (const type of membershipTypes) {
-      const response = await fetch(
-        `${BASE}/Destiny2/SearchDestinyPlayerByBungieName/${type}/`,
-        {
-          method: "POST",
-          headers: {
-            "X-API-Key": API_KEY,
-            "Content-Type": "application/json",
-          },
-          body: JSON.stringify({ displayName: username }),
-        }
-      );
+app.post("/register", async (req, res) => {
+  const { email, password } = req.body;
 
-      if (!response.ok) continue;
-
-      const json = await response.json();
-      if (json.Response && json.Response.length > 0) {
-        const player = json.Response[0];
-        return res.json(player);
-      }
-    }
-
-    res.status(404).json({ error: "Player not found on any platform" });
-  } catch (err) {
-    console.error(err);
-    res.status(500).json({ error: "Bungie API request failed" });
+  if (users.has(email)) {
+    return res.status(400).json({ message: "User already exists" });
   }
+
+  const passwordHash = await bcrypt.hash(password, 10);
+  users.set(email, { email, passwordHash });
+
+  res.json({ message: "Registration successful", email });
 });
 
-// Fetch activities for a given player
-app.get("/api/activities/:membershipType/:membershipId", async (req, res) => {
-  const { membershipType, membershipId } = req.params;
+app.post("/login", async (req, res) => {
+  const { email, password } = req.body;
+  const user = users.get(email);
 
-  try {
-    const response = await fetch(
-      `${BASE}/Destiny2/${membershipType}/Account/${membershipId}/Character/0/Stats/Activities/?count=10`,
-      {
-        headers: {
-          "X-API-Key": API_KEY,
-        },
-      }
-    );
-
-    if (!response.ok) {
-      return res.status(500).json({ error: "Failed to fetch activities" });
-    }
-
-    const json = await response.json();
-    const activities = json.Response.activities || [];
-    res.json(activities);
-  } catch (err) {
-    console.error(err);
-    res.status(500).json({ error: "Failed to fetch activities" });
+  if (!user) {
+    return res.status(400).json({ message: "User not found" });
   }
+
+  const valid = await bcrypt.compare(password, user.passwordHash);
+  if (!valid) {
+    return res.status(401).json({ message: "Invalid password" });
+  }
+
+  res.json({ message: "Login successful", email });
 });
 
-app.listen(PORT, () => console.log(`Backend running on port ${PORT}`));
+app.listen(port, () => {
+  console.log(`Auth service running on http://localhost:${port}`);
+});

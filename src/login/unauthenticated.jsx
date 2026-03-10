@@ -4,16 +4,40 @@ export function Unauthenticated({ userName, onLogin }) {
   const [email, setEmail] = React.useState(userName);
   const [password, setPassword] = React.useState('');
 
-  function handleSubmit(e) {
-    e.preventDefault();
-    localStorage.setItem('userName', email);
-    onLogin(email);
-  }
+  async function handleSubmit(e) {
+  e.preventDefault();
+  try {
+    const res = await fetch("http://localhost:5000/login", {
+      method: "POST",
+      headers: { "Content-Type": "application/json" },
+      body: JSON.stringify({ email, password }),
+    });
+    const data = await res.json();
+    if (!res.ok) throw new Error(data.message || "Login failed");
 
-  function handleRegister() {
-    localStorage.setItem('userName', email);
-    onLogin(email);
+    localStorage.setItem("userName", data.email);
+    onLogin(data.email);
+  } catch (err) {
+    alert(err.message);
   }
+}
+
+async function handleRegister() {
+  try {
+    const res = await fetch("http://localhost:5000/register", {
+      method: "POST",
+      headers: { "Content-Type": "application/json" },
+      body: JSON.stringify({ email, password }),
+    });
+    const data = await res.json();
+    if (!res.ok) throw new Error(data.message || "Register failed");
+
+    localStorage.setItem("userName", data.email);
+    onLogin(data.email);
+  } catch (err) {
+    alert(err.message);
+  }
+}
 
   return (
     <form className="login-form" onSubmit={handleSubmit}>

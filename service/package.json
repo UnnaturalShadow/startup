@@ -1,19 +1,28 @@
 {
   "name": "service",
   "version": "1.0.0",
-  "description": "",
+  "description": "Backend service for Startup analytics and Bungie API integration",
   "main": "index.js",
+  "type": "module",
   "scripts": {
-    "test": "echo \"Error: no test specified\" && exit 1"
+    "start": "node index.js",
+    "dev": "node index.js"
   },
-  "keywords": [],
-  "author": "",
+  "keywords": [
+    "express",
+    "bungie-api",
+    "analytics",
+    "startup"
+  ],
+  "author": "Joshua Decker",
   "license": "ISC",
-  "type": "commonjs",
   "dependencies": {
     "bcryptjs": "^3.0.3",
     "cookie-parser": "^1.4.7",
+    "cors": "^2.8.6",
+    "dotenv": "^17.3.1",
     "express": "^5.2.1",
+    "node-fetch": "^3.3.2",
     "uuid": "^13.0.0"
   }
 }
