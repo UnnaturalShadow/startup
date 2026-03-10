@@ -1,203 +1,75 @@
-const express = require('express');
-const cookieParser = require('cookie-parser');
-const bcrypt = require('bcryptjs');
-const uuid = require('uuid');
+import express from "express";
+import fetch from "node-fetch"; // or global fetch in Node 18+
+import dotenv from "dotenv";
+dotenv.config();
 
 const app = express();
-const port = process.argv.length > 2 ? process.argv[2] : 4000;
+const PORT = 4000;
+const API_KEY = process.env.BUNGIE_API_KEY;
+const BASE = "https://www.bungie.net/Platform";
 
 app.use(express.json());
-app.use(cookieParser());
 
-// ------------------------------
-// In-memory storage
-// ------------------------------
+// Search player across all platforms
+app.get("/api/player/:username", async (req, res) => {
+  const { username } = req.params;
+  const membershipTypes = [1, 2, 3]; // Xbox, PSN, Steam
 
-const users = [];
-const authTokens = {};
-const maps = {};
+  try {
+    for (const type of membershipTypes) {
+      const response = await fetch(
+        `${BASE}/Destiny2/SearchDestinyPlayerByBungieName/${type}/`,
+        {
+          method: "POST",
+          headers: {
+            "X-API-Key": API_KEY,
+            "Content-Type": "application/json",
+          },
+          body: JSON.stringify({ displayName: username }),
+        }
+      );
 
-let nextMapId = 1;
+      if (!response.ok) continue;
 
-// ------------------------------
-// Helper functions
-// ------------------------------
+      const json = await response.json();
+      if (json.Response && json.Response.length > 0) {
+        const player = json.Response[0];
+        return res.json(player);
+      }
+    }
 
-function generateAuthToken() {
-  return uuid.v4();
-}
-
-function generateSessionCode() {
-  return Math.random().toString(36).substring(2, 6).toUpperCase();
-}
-
-// ------------------------------
-// Auth Middleware
-// ------------------------------
-
-function authCookie(req, res, next) {
-  const token = req.cookies.token;
-
-  if (!token || !authTokens[token]) {
-    return res.status(401).send({ error: 'Unauthorized' });
+    res.status(404).json({ error: "Player not found on any platform" });
+  } catch (err) {
+    console.error(err);
+    res.status(500).json({ error: "Bungie API request failed" });
   }
+});
 
-  req.user = authTokens[token];
-  next();
-}
+// Fetch activities for a given player
+app.get("/api/activities/:membershipType/:membershipId", async (req, res) => {
+  const { membershipType, membershipId } = req.params;
 
-// ------------------------------
-// Authentication Endpoints
-// ------------------------------
+  try {
+    const response = await fetch(
+      `${BASE}/Destiny2/${membershipType}/Account/${membershipId}/Character/0/Stats/Activities/?count=10`,
+      {
+        headers: {
+          "X-API-Key": API_KEY,
+        },
+      }
+    );
 
-// Register
-app.post('/api/auth/create', async (req, res) => {
-  const { email, password } = req.body;
+    if (!response.ok) {
+      return res.status(500).json({ error: "Failed to fetch activities" });
+    }
 
-  const existingUser = users.find(u => u.email === email);
-  if (existingUser) {
-    return res.status(409).send({ error: 'User already exists' });
+    const json = await response.json();
+    const activities = json.Response.activities || [];
+    res.json(activities);
+  } catch (err) {
+    console.error(err);
+    res.status(500).json({ error: "Failed to fetch activities" });
   }
-
-  const passwordHash = await bcrypt.hash(password, 10);
-
-  const user = {
-    email,
-    password: passwordHash,
-  };
-
-  users.push(user);
-
-  const token = generateAuthToken();
-  authTokens[token] = user;
-
-  res.cookie('token', token, { httpOnly: true });
-  res.send({ email: user.email });
 });
 
-// Login
-app.post('/api/auth/login', async (req, res) => {
-  const { email, password } = req.body;
-
-  const user = users.find(u => u.email === email);
-
-  if (!user) {
-    return res.status(401).send({ error: 'Invalid credentials' });
-  }
-
-  const valid = await bcrypt.compare(password, user.password);
-
-  if (!valid) {
-    return res.status(401).send({ error: 'Invalid credentials' });
-  }
-
-  const token = generateAuthToken();
-  authTokens[token] = user;
-
-  res.cookie('token', token, { httpOnly: true });
-  res.send({ email: user.email });
-});
-
-// Logout
-app.delete('/api/auth/logout', (req, res) => {
-  const token = req.cookies.token;
-
-  if (token) {
-    delete authTokens[token];
-  }
-
-  res.clearCookie('token');
-  res.send({ status: 'logged out' });
-});
-
-// ------------------------------
-// Example Restricted Endpoint
-// ------------------------------
-
-app.get('/api/user/me', authCookie, (req, res) => {
-  res.send({ email: req.user.email });
-});
-
-// ------------------------------
-// Map Session Endpoints
-// ------------------------------
-
-// Create map session
-app.post('/api/maps', authCookie, (req, res) => {
-  const { mapName } = req.body;
-
-  const sessionCode = generateSessionCode();
-  const mapId = nextMapId++;
-
-  maps[mapId] = {
-    mapId,
-    mapName,
-    sessionCode,
-    owner: req.user.email,
-    annotations: [],
-  };
-
-  res.send({
-    mapId,
-    sessionCode,
-  });
-});
-
-// Join map session
-app.post('/api/maps/join', authCookie, (req, res) => {
-  const { sessionCode } = req.body;
-
-  const map = Object.values(maps).find(m => m.sessionCode === sessionCode);
-
-  if (!map) {
-    return res.status(404).send({ error: 'Session not found' });
-  }
-
-  res.send({
-    mapId: map.mapId,
-    mapName: map.mapName,
-  });
-});
-
-// Save annotation
-app.post('/api/maps/:mapId/annotations', authCookie, (req, res) => {
-  const map = maps[req.params.mapId];
-
-  if (!map) {
-    return res.status(404).send({ error: 'Map not found' });
-  }
-
-  const annotation = {
-    user: req.user.email,
-    ...req.body,
-  };
-
-  map.annotations.push(annotation);
-
-  res.send({ status: 'saved' });
-});
-
-// Get annotations
-app.get('/api/maps/:mapId/annotations', authCookie, (req, res) => {
-  const map = maps[req.params.mapId];
-
-  if (!map) {
-    return res.status(404).send({ error: 'Map not found' });
-  }
-
-  res.send(map.annotations);
-});
-
-// ------------------------------
-// Serve frontend
-// ------------------------------
-
-app.use(express.static('public'));
-
-// ------------------------------
-// Start server
-// ------------------------------
-
-app.listen(port, () => {
-  console.log(`Service running on port ${port}`);
-});
+app.listen(PORT, () => console.log(`Backend running on port ${PORT}`));
