@@ -1,43 +1,48 @@
-import React from 'react';
+import React from "react";
 
 export function Unauthenticated({ userName, onLogin }) {
-  const [email, setEmail] = React.useState(userName);
-  const [password, setPassword] = React.useState('');
+  const [email, setEmail] = React.useState(userName || "");
+  const [password, setPassword] = React.useState("");
 
+  // Login handler
   async function handleSubmit(e) {
-  e.preventDefault();
-  try {
-    const res = await fetch("http://localhost:5000/login", {
-      method: "POST",
-      headers: { "Content-Type": "application/json" },
-      body: JSON.stringify({ email, password }),
-    });
-    const data = await res.json();
-    if (!res.ok) throw new Error(data.message || "Login failed");
+    e.preventDefault();
+    try {
+      const res = await fetch("http://localhost:5000/login", {
+        method: "POST",
+        headers: { "Content-Type": "application/json" },
+        body: JSON.stringify({ email, password }),
+      });
 
-    localStorage.setItem("userName", data.email);
-    onLogin(data.email);
-  } catch (err) {
-    alert(err.message);
+      const data = await res.json();
+      if (!res.ok) throw new Error(data.message || "Login failed");
+
+      // Store session identifier (email for now, can swap for JWT later)
+      localStorage.setItem("userName", data.email);
+      onLogin(data.email);
+    } catch (err) {
+      alert(err.message);
+    }
   }
-}
 
-async function handleRegister() {
-  try {
-    const res = await fetch("http://localhost:5000/register", {
-      method: "POST",
-      headers: { "Content-Type": "application/json" },
-      body: JSON.stringify({ email, password }),
-    });
-    const data = await res.json();
-    if (!res.ok) throw new Error(data.message || "Register failed");
+  // Register handler
+  async function handleRegister() {
+    try {
+      const res = await fetch("http://localhost:5000/register", {
+        method: "POST",
+        headers: { "Content-Type": "application/json" },
+        body: JSON.stringify({ email, password }),
+      });
 
-    localStorage.setItem("userName", data.email);
-    onLogin(data.email);
-  } catch (err) {
-    alert(err.message);
+      const data = await res.json();
+      if (!res.ok) throw new Error(data.message || "Register failed");
+
+      localStorage.setItem("userName", data.email);
+      onLogin(data.email);
+    } catch (err) {
+      alert(err.message);
+    }
   }
-}
 
   return (
     <form className="login-form" onSubmit={handleSubmit}>
