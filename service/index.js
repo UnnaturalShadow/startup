@@ -8,60 +8,52 @@ const port = 5000;
 app.use(cors());
 app.use(express.json());
 
-// Temporary in-memory user store (replace with DB later)
+// In-memory store (replace with DB later)
 const users = new Map(); // key=email, value={ email, passwordHash }
 
-// ===================== REGISTER =====================
+// Keep track of logged-in users (for demo, sessionless)
+const loggedIn = new Set();
+
+// Register endpoint
 app.post("/register", async (req, res) => {
-  try {
-    const { email, password } = req.body;
+  const { email, password } = req.body;
 
-    if (!email || !password)
-      return res.status(400).json({ message: "Email and password required" });
+  if (users.has(email)) return res.status(400).json({ message: "User already exists" });
 
-    if (users.has(email)) {
-      return res.status(400).json({ message: "User already exists" });
-    }
+  const passwordHash = await bcrypt.hash(password, 10);
+  users.set(email, { email, passwordHash });
 
-    // Hash password with bcrypt
-    const passwordHash = await bcrypt.hash(password, 10);
-    users.set(email, { email, passwordHash });
-
-    return res.json({ message: "Registration successful", email });
-  } catch (err) {
-    console.error(err);
-    return res.status(500).json({ message: "Server error" });
-  }
+  res.json({ message: "Registration successful", email });
 });
 
-// ===================== LOGIN =====================
+// Login endpoint
 app.post("/login", async (req, res) => {
-  try {
-    const { email, password } = req.body;
+  const { email, password } = req.body;
+  const user = users.get(email);
 
-    if (!email || !password)
-      return res.status(400).json({ message: "Email and password required" });
+  if (!user) return res.status(400).json({ message: "User not found" });
 
-    const user = users.get(email);
-    if (!user) {
-      return res.status(400).json({ message: "User not found" });
-    }
+  const valid = await bcrypt.compare(password, user.passwordHash);
+  if (!valid) return res.status(401).json({ message: "Invalid password" });
 
-    // Compare password with hash
-    const valid = await bcrypt.compare(password, user.passwordHash);
-    if (!valid) {
-      return res.status(401).json({ message: "Invalid password" });
-    }
+  // Mark user as logged in
+  loggedIn.add(email);
 
-    // Successful login
-    return res.json({ message: "Login successful", email });
-  } catch (err) {
-    console.error(err);
-    return res.status(500).json({ message: "Server error" });
+  res.json({ message: "Login successful", email });
+});
+
+// New logout endpoint
+app.post("/logout", (req, res) => {
+  const { email } = req.body;
+
+  if (loggedIn.has(email)) {
+    loggedIn.delete(email);
+    res.json({ message: "Logout successful" });
+  } else {
+    res.status(400).json({ message: "User was not logged in" });
   }
 });
 
-// ===================== START SERVER =====================
 app.listen(port, () => {
   console.log(`Auth service running on http://localhost:${port}`);
 });
