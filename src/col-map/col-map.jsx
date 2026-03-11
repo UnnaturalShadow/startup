@@ -135,7 +135,14 @@ function MapCanvas({ imageSrc, lines, setLines, undoneLines, setUndoneLines }) {
       </div>
 
       {/* Stage */}
-      <Stage width={stageSize.width} height={stageSize.height} onMouseDown={handleMouseDown} onMouseMove={handleMouseMove} onMouseUp={handleMouseUp} style={{ border: "1px solid #ccc", borderRadius: "6px" }}>
+      <Stage
+        width={stageSize.width}
+        height={stageSize.height}
+        onPointerDown={handleMouseDown}  // <- changed from onMouseDown
+        onPointerMove={handleMouseMove}  // <- changed from onMouseMove
+        onPointerUp={handleMouseUp}      // <- changed from onMouseUp
+        style={{ border: "1px solid #ccc", borderRadius: "6px" }}
+      >
         <Layer>
           {backgroundImage && (
             <Image
