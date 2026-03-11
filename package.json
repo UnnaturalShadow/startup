@@ -25,6 +25,7 @@
   },
   "dependencies": {
     "bootstrap": "^5.3.8",
+    "bungie-net-api": "^1.0.6",
     "fabric": "^7.2.0",
     "konva": "^10.2.0",
     "react": "^19.2.4",
