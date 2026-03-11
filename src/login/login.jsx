@@ -5,20 +5,53 @@ import { AuthState } from './authState';
 import { Unauthenticated } from './unauthenticated';
 import { Authenticated } from './authenticated';
 
-export function Login() {
-  const [userName, setUserName] = React.useState('');
-  const [authState, setAuthState] = React.useState(AuthState.Unknown);
+export function Login({ setLoggedIn }) {
+  const [email, setEmail] = useState("");
+  const [password, setPassword] = useState("");
 
-  function handleAuthChange(newUserName, newAuthState) {
-    setUserName(newUserName);
-    setAuthState(newAuthState);
-  }
+  const handleSubmit = async (e) => {
+    e.preventDefault();
+    try {
+      const res = await fetch("/login", {
+        method: "POST",
+        headers: { "Content-Type": "application/json" },
+        body: JSON.stringify({ email, password }),
+        credentials: "include",
+      });
+
+      if (!res.ok) throw new Error("Login failed");
+      setLoggedIn(true); // <-- updates header immediately
+    } catch (err) {
+      alert(err.message);
+    }
+  };
+
+  return (
+    <form onSubmit={handleSubmit}>
+      <input
+        type="email"
+        placeholder="Email"
+        value={email}
+        onChange={(e) => setEmail(e.target.value)}
+        required
+      />
+      <input
+        type="password"
+        placeholder="Password"
+        value={password}
+        onChange={(e) => setPassword(e.target.value)}
+        required
+      />
+      <button type="submit">Login</button>
+    </form>
+  );
+}
 
   // Check server session
   useEffect(() => {
     async function checkSession() {
       try {
-        const res = await fetch('http://localhost:5000/session', {
+        const res = await fetch('/session', {
           credentials: 'include',
         });
 
@@ -60,4 +93,3 @@ export function Login() {
       )}
     </main>
   );
-}

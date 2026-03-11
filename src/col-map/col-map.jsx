@@ -33,10 +33,7 @@ function MapCanvas({ imageSrc, lines, setLines, undoneLines, setUndoneLines }) {
   const [brushColor, setBrushColor] = useState("#ff0000");
   const [brushWidth, setBrushWidth] = useState(4);
 
-  const [stageSize, setStageSize] = useState({
-    width: 1000,
-    height: 600,
-  });
+  const [stageSize, setStageSize] = useState({ width: 1000, height: 600 });
 
   /* -------------------------
      Resize Stage Responsively
@@ -45,7 +42,7 @@ function MapCanvas({ imageSrc, lines, setLines, undoneLines, setUndoneLines }) {
     const resize = () => {
       if (!containerRef.current) return;
       const width = containerRef.current.offsetWidth;
-      const height = width * (600 / 1000); // maintain 16:9 ratio
+      const height = width * (600 / 1000); // keep 16:9
       setStageSize({ width, height });
     };
     resize();
@@ -54,32 +51,48 @@ function MapCanvas({ imageSrc, lines, setLines, undoneLines, setUndoneLines }) {
   }, []);
 
   /* -------------------------
+     Prevent scrolling while drawing
+     ------------------------- */
+  useEffect(() => {
+    const preventScroll = (e) => {
+      if (isDrawing.current) e.preventDefault();
+    };
+    window.addEventListener("touchmove", preventScroll, { passive: false });
+    return () => window.removeEventListener("touchmove", preventScroll);
+  }, []);
+
+  /* -------------------------
+     Convert absolute pos -> normalized
+     ------------------------- */
+  const normalizePoint = (pos) => [pos.x / stageSize.width, pos.y / stageSize.height];
+  const denormalizePoints = (points) =>
+    points.map((p, i) => (i % 2 === 0 ? p * stageSize.width : p * stageSize.height));
+
+  /* -------------------------
      Drawing Events
      ------------------------- */
-  const handleMouseDown = (e) => {
+  const handlePointerDown = (e) => {
     isDrawing.current = true;
     const pos = e.target.getStage().getPointerPosition();
-
     setLines([
       ...lines,
-      { points: [pos.x, pos.y], color: brushColor, width: brushWidth },
+      { points: normalizePoint(pos), color: brushColor, width: brushWidth },
     ]);
-
     setUndoneLines([]);
   };
 
-  const handleMouseMove = (e) => {
+  const handlePointerMove = (e) => {
     if (!isDrawing.current) return;
     const stage = e.target.getStage();
     const pos = stage.getPointerPosition();
 
-    let lastLine = lines[lines.length - 1];
-    lastLine.points = lastLine.points.concat([pos.x, pos.y]);
+    const lastLine = lines[lines.length - 1];
+    lastLine.points = lastLine.points.concat(normalizePoint(pos));
     lines.splice(lines.length - 1, 1, lastLine);
     setLines([...lines]);
   };
 
-  const handleMouseUp = () => {
+  const handlePointerUp = () => {
     isDrawing.current = false;
   };
 
@@ -138,9 +151,9 @@ function MapCanvas({ imageSrc, lines, setLines, undoneLines, setUndoneLines }) {
       <Stage
         width={stageSize.width}
         height={stageSize.height}
-        onPointerDown={handleMouseDown}  // <- changed from onMouseDown
-        onPointerMove={handleMouseMove}  // <- changed from onMouseMove
-        onPointerUp={handleMouseUp}      // <- changed from onMouseUp
+        onPointerDown={handlePointerDown}
+        onPointerMove={handlePointerMove}
+        onPointerUp={handlePointerUp}
         style={{ border: "1px solid #ccc", borderRadius: "6px" }}
       >
         <Layer>
@@ -157,7 +170,15 @@ function MapCanvas({ imageSrc, lines, setLines, undoneLines, setUndoneLines }) {
           )}
 
           {lines.map((line, i) => (
-            <Line key={i} points={line.points} stroke={line.color} strokeWidth={line.width} tension={0.5} lineCap="round" lineJoin="round" />
+            <Line
+              key={i}
+              points={denormalizePoints(line.points)}
+              stroke={line.color}
+              strokeWidth={line.width * scale} // scale width for device
+              tension={0.5}
+              lineCap="round"
+              lineJoin="round"
+            />
           ))}
         </Layer>
       </Stage>
@@ -197,7 +218,7 @@ export function ColMap() {
     if (!selectedRaid || !selectedEncounter) return;
 
     try {
-      const res = await fetch("http://localhost:4000/maps", {
+      const res = await fetch("/maps", {
         method: "POST",
         headers: { "Content-Type": "application/json" },
         body: JSON.stringify({ raid: selectedRaid, encounter: selectedEncounter, lines }),
@@ -217,7 +238,7 @@ export function ColMap() {
     if (!joinCode) return;
 
     try {
-      const res = await fetch(`http://localhost:4000/maps/${joinCode}`);
+      const res = await fetch(`/maps/${joinCode}`);
       if (!res.ok) throw new Error("Invalid code");
       const { raid, encounter, lines: savedLines } = await res.json();
 

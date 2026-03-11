@@ -11,7 +11,7 @@ const port = process.argv.length > 2 ? process.argv[2] : 4000;
 app.use(express.static('public'));
 
 app.use(cors({
-  origin: "http://localhost:5173",
+  origin: "http://startup.unnaturalshadow.com",
   credentials: true
 }));
 

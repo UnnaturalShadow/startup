@@ -6,7 +6,7 @@ export function Authenticated({ userName, onLogout }) {
 
   async function handleLogout() {
     try {
-      const res = await fetch("http://localhost:5000/logout", {
+      const res = await fetch("/logout", {
         method: "POST",
         credentials: "include", // send session cookie
       });

@@ -1,4 +1,4 @@
-import React from 'react';
+import React, { useEffect, useState } from 'react';
 import 'bootstrap/dist/css/bootstrap.min.css';
 import './app.css';
 import { BrowserRouter, NavLink, Route, Routes } from 'react-router-dom';
@@ -15,6 +15,16 @@ import { King } from './kings-fall/king';
 import { DSC } from './dsc/dsc';
 
 export default function App() {
+  const [loggedIn, setLoggedIn] = useState(false);
+
+  // Check session on load
+  useEffect(() => {
+    fetch('/session', { credentials: 'include' })
+      .then(res => res.json())
+      .then(data => setLoggedIn(data.loggedIn))
+      .catch(() => setLoggedIn(false));
+  }, []);
+
   return (
     <BrowserRouter>
       <div className="app-wrapper">
@@ -24,7 +34,7 @@ export default function App() {
             <nav>
               <ul>
                 <li className="nav-item"><NavLink to="/">Home</NavLink></li>
-                <li className="nav-item"><NavLink to="/maps">Maps</NavLink></li>
+                {loggedIn && <li className="nav-item"><NavLink to="/maps">Maps</NavLink></li>}
                 <li className="nav-item"><NavLink to="/analytics">Analytics</NavLink></li>
                 <li className="nav-item"><NavLink to="/about">About</NavLink></li>
               </ul>
@@ -32,25 +42,29 @@ export default function App() {
           </div>
 
           <div className="right-content">
-            <NavLink className="profile-button" to="/login">Login</NavLink>
+            <NavLink className="profile-button" to="/login">
+              {loggedIn ? 'Profile / Logout' : 'Login'}
+            </NavLink>
           </div>
         </header>
 
         <main>
           <Routes>
             <Route path="/" element={<Home />} />
-            <Route path="/maps" element={<ColMap />} />
-            {/* <Route path="/scores" element={<Scores />} /> */}
+            {loggedIn && <Route path="/maps" element={<ColMap />} />}
             <Route path="/about" element={<About />} />
-            <Route path="*" element={<NotFound />} />
             <Route path="/analytics" element={<Analytics />} />
-            <Route path="/login" element={<Login />} />
+            <Route
+              path="/login"
+              element={<Login setLoggedIn={setLoggedIn} />}
+            />
             <Route path="/vog" element={<Vog />} />
             <Route path="/vow" element={<Vow />} />
             <Route path="/wish" element={<Wish />} />
             <Route path="/garden" element={<Garden />} />
             <Route path="/king" element={<King />} />
             <Route path="/dsc" element={<DSC />} />
+            <Route path="*" element={<NotFound />} />
           </Routes>
         </main>
 
