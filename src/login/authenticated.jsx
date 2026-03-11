@@ -5,25 +5,17 @@ export function Authenticated({ userName, onLogout }) {
   const navigate = useNavigate();
 
   async function handleLogout() {
-    const sessionId = localStorage.getItem("sessionId");
-    if (!sessionId) {
-      alert("You are not logged in");
-      return;
-    }
-
     try {
       const res = await fetch("http://localhost:5000/logout", {
         method: "POST",
-        headers: { "Content-Type": "application/json" },
-        body: JSON.stringify({ sessionId }),
+        credentials: "include", // send session cookie
       });
 
-      const data = await res.json();
-      if (!res.ok) throw new Error(data.message || "Logout failed");
+      if (!res.ok) {
+        const data = await res.json();
+        throw new Error(data.message || "Logout failed");
+      }
 
-      // Clear session
-      localStorage.removeItem("userName");
-      localStorage.removeItem("sessionId");
       onLogout();
     } catch (err) {
       alert(err.message);

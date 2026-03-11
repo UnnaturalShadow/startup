@@ -5,23 +5,19 @@ export function Unauthenticated({ userName, onLogin }) {
   const [password, setPassword] = React.useState("");
   const [displayError, setDisplayError] = React.useState(null);
 
-  // Unified login/register handler
   async function loginOrRegister(endpoint) {
     try {
       const res = await fetch(`http://localhost:5000/${endpoint}`, {
         method: "POST",
         headers: { "Content-Type": "application/json" },
+        credentials: "include",   // allow session cookie
         body: JSON.stringify({ email, password }),
       });
 
       const data = await res.json();
       if (!res.ok) throw new Error(data.message || `${endpoint} failed`);
 
-      // Store username and sessionId for logout
-      localStorage.setItem("userName", data.email);
-      localStorage.setItem("sessionId", data.sessionId);
-
-      onLogin(data.email, data.sessionId);
+      onLogin(data.email);
     } catch (err) {
       setDisplayError(err.message);
     }

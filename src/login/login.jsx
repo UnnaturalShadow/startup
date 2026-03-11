@@ -14,24 +14,18 @@ export function Login() {
     setAuthState(newAuthState);
   }
 
-  // Server-side session check
+  // Check server session
   useEffect(() => {
     async function checkSession() {
-      const savedUser = localStorage.getItem('userName');
-      if (!savedUser) {
-        handleAuthChange('', AuthState.Unauthenticated);
-        return;
-      }
-
       try {
         const res = await fetch('http://localhost:5000/session', {
-          credentials: 'include', // Needed if backend uses cookies
+          credentials: 'include',
         });
+
         if (res.ok) {
           const data = await res.json();
           handleAuthChange(data.email, AuthState.Authenticated);
         } else {
-          localStorage.removeItem('userName');
           handleAuthChange('', AuthState.Unauthenticated);
         }
       } catch (err) {
@@ -60,10 +54,7 @@ export function Login() {
         <Unauthenticated
           userName={userName}
           onLogin={(loginUserName) =>
-            handleAuthChange(
-              loginUserName,
-              AuthState.Authenticated
-            )
+            handleAuthChange(loginUserName, AuthState.Authenticated)
           }
         />
       )}
