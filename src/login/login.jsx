@@ -30,7 +30,7 @@ export function Login({ setLoggedIn }) {
   const handleSubmit = async (e) => {
     e.preventDefault();
     try {
-      const res = await fetch('/login', {
+      const res = await fetch('/api/login', {
         method: 'POST',
         headers: { 'Content-Type': 'application/json' },
         body: JSON.stringify({ email, password }),
@@ -52,7 +52,7 @@ export function Login({ setLoggedIn }) {
   useEffect(() => {
     async function checkSession() {
       try {
-        const res = await fetch('/session', { credentials: 'include' });
+        const res = await fetch('/api/session', { credentials: 'include' });
         if (res.ok) {
           const data = await res.json();
           handleAuthChange(data.email, AuthState.Authenticated);

@@ -218,7 +218,7 @@ export function ColMap() {
     if (!selectedRaid || !selectedEncounter) return;
 
     try {
-      const res = await fetch("/maps", {
+      const res = await fetch("/api/maps", {
         method: "POST",
         headers: { "Content-Type": "application/json" },
         body: JSON.stringify({ raid: selectedRaid, encounter: selectedEncounter, lines }),
@@ -238,7 +238,7 @@ export function ColMap() {
     if (!joinCode) return;
 
     try {
-      const res = await fetch(`/maps/${joinCode}`);
+      const res = await fetch(`/api/maps/${joinCode}`);
       if (!res.ok) throw new Error("Invalid code");
       const { raid, encounter, lines: savedLines } = await res.json();
 

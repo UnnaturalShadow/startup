@@ -7,7 +7,7 @@ export function Unauthenticated({ userName, onLogin }) {
 
   async function loginOrRegister(endpoint) {
     try {
-      const res = await fetch(`/${endpoint}`, {
+      const res = await fetch(`/api/${endpoint}`, {
         method: "POST",
         headers: { "Content-Type": "application/json" },
         credentials: "include",   // allow session cookie
