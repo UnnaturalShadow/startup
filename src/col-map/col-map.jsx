@@ -44,13 +44,10 @@ function MapCanvas({ imageSrc, lines, setLines, undoneLines, setUndoneLines }) {
   useEffect(() => {
     const resize = () => {
       if (!containerRef.current) return;
-
       const width = containerRef.current.offsetWidth;
       const height = width * (600 / 1000); // maintain 16:9 ratio
-
       setStageSize({ width, height });
     };
-
     resize();
     window.addEventListener("resize", resize);
     return () => window.removeEventListener("resize", resize);
@@ -65,11 +62,7 @@ function MapCanvas({ imageSrc, lines, setLines, undoneLines, setUndoneLines }) {
 
     setLines([
       ...lines,
-      {
-        points: [pos.x, pos.y],
-        color: brushColor,
-        width: brushWidth,
-      },
+      { points: [pos.x, pos.y], color: brushColor, width: brushWidth },
     ]);
 
     setUndoneLines([]);
@@ -77,13 +70,11 @@ function MapCanvas({ imageSrc, lines, setLines, undoneLines, setUndoneLines }) {
 
   const handleMouseMove = (e) => {
     if (!isDrawing.current) return;
-
     const stage = e.target.getStage();
     const pos = stage.getPointerPosition();
 
     let lastLine = lines[lines.length - 1];
     lastLine.points = lastLine.points.concat([pos.x, pos.y]);
-
     lines.splice(lines.length - 1, 1, lastLine);
     setLines([...lines]);
   };
@@ -118,76 +109,33 @@ function MapCanvas({ imageSrc, lines, setLines, undoneLines, setUndoneLines }) {
      Image Scaling
      ------------------------- */
   const scale = backgroundImage
-    ? Math.min(
-        stageSize.width / backgroundImage.width,
-        stageSize.height / backgroundImage.height
-      )
+    ? Math.min(stageSize.width / backgroundImage.width, stageSize.height / backgroundImage.height)
     : 1;
 
   return (
     <div
       ref={containerRef}
-      style={{
-        width: "100%",
-        maxWidth: "1000px",
-        margin: "0 auto",
-        display: "flex",
-        flexDirection: "column",
-        gap: "8px",
-      }}
+      style={{ width: "100%", maxWidth: "1000px", margin: "0 auto", display: "flex", flexDirection: "column", gap: "8px" }}
     >
       {/* Controls */}
       <div className="map-canvas-controls">
         <label>
           Brush Color:
-          <input
-            type="color"
-            value={brushColor}
-            onChange={(e) => setBrushColor(e.target.value)}
-            style={{ marginLeft: "4px" }}
-          />
+          <input type="color" value={brushColor} onChange={(e) => setBrushColor(e.target.value)} style={{ marginLeft: "4px" }} />
         </label>
 
         <label>
           Brush Width:
-          <input
-            type="number"
-            min="1"
-            max="50"
-            value={brushWidth}
-            onChange={(e) => setBrushWidth(Number(e.target.value))}
-            style={{ width: "60px", marginLeft: "4px" }}
-          />
+          <input type="number" min="1" max="50" value={brushWidth} onChange={(e) => setBrushWidth(Number(e.target.value))} style={{ width: "60px", marginLeft: "4px" }} />
         </label>
 
-        <button onClick={handleUndo} disabled={!lines.length}>
-          Undo
-        </button>
-
-        <button onClick={handleRedo} disabled={!undoneLines.length}>
-          Redo
-        </button>
-
-        <button
-          onClick={handleClear}
-          disabled={!lines.length && !undoneLines.length}
-        >
-          Clear
-        </button>
+        <button onClick={handleUndo} disabled={!lines.length}>Undo</button>
+        <button onClick={handleRedo} disabled={!undoneLines.length}>Redo</button>
+        <button onClick={handleClear} disabled={!lines.length && !undoneLines.length}>Clear</button>
       </div>
 
       {/* Stage */}
-      <Stage
-        width={stageSize.width}
-        height={stageSize.height}
-        onMouseDown={handleMouseDown}
-        onMouseMove={handleMouseMove}
-        onMouseUp={handleMouseUp}
-        style={{
-          border: "1px solid #ccc",
-          borderRadius: "6px",
-        }}
-      >
+      <Stage width={stageSize.width} height={stageSize.height} onMouseDown={handleMouseDown} onMouseMove={handleMouseMove} onMouseUp={handleMouseUp} style={{ border: "1px solid #ccc", borderRadius: "6px" }}>
         <Layer>
           {backgroundImage && (
             <Image
@@ -202,15 +150,7 @@ function MapCanvas({ imageSrc, lines, setLines, undoneLines, setUndoneLines }) {
           )}
 
           {lines.map((line, i) => (
-            <Line
-              key={i}
-              points={line.points}
-              stroke={line.color}
-              strokeWidth={line.width}
-              tension={0.5}
-              lineCap="round"
-              lineJoin="round"
-            />
+            <Line key={i} points={line.points} stroke={line.color} strokeWidth={line.width} tension={0.5} lineCap="round" lineJoin="round" />
           ))}
         </Layer>
       </Stage>
@@ -221,18 +161,12 @@ function MapCanvas({ imageSrc, lines, setLines, undoneLines, setUndoneLines }) {
 /* =========================
    ColMap Page
    ========================= */
-
 export function ColMap() {
   const raidNames = Object.keys(MAPS);
   const [selectedRaid, setSelectedRaid] = useState(raidNames[0]);
 
-  const encounterNames = useMemo(
-    () => Object.keys(MAPS[selectedRaid] || {}),
-    [selectedRaid]
-  );
-
-  const [selectedEncounter, setSelectedEncounter] =
-    useState(encounterNames[0]);
+  const encounterNames = useMemo(() => Object.keys(MAPS[selectedRaid] || {}), [selectedRaid]);
+  const [selectedEncounter, setSelectedEncounter] = useState(encounterNames[0]);
 
   const [lines, setLines] = useState([]);
   const [undoneLines, setUndoneLines] = useState([]);
@@ -240,6 +174,7 @@ export function ColMap() {
   const [shareCode, setShareCode] = useState("");
   const [joinCode, setJoinCode] = useState("");
 
+  // Reset encounter on raid change
   useEffect(() => {
     setSelectedEncounter(encounterNames[0]);
     setLines([]);
@@ -248,76 +183,66 @@ export function ColMap() {
 
   const currentMap = MAPS[selectedRaid]?.[selectedEncounter];
 
-  const handleGenerateCode = () => {
-    const code = Math.random().toString(36).substring(2, 8).toUpperCase();
-    const savedMaps = JSON.parse(
-      localStorage.getItem("sharedMaps") || "{}"
-    );
+  /* -------------------------
+     Backend Integration
+     ------------------------- */
+  const handleGenerateCode = async () => {
+    if (!selectedRaid || !selectedEncounter) return;
 
-    savedMaps[code] = {
-      raid: selectedRaid,
-      encounter: selectedEncounter,
-      lines,
-    };
-
-    localStorage.setItem("sharedMaps", JSON.stringify(savedMaps));
-    setShareCode(code);
+    try {
+      const res = await fetch("http://localhost:4000/maps", {
+        method: "POST",
+        headers: { "Content-Type": "application/json" },
+        body: JSON.stringify({ raid: selectedRaid, encounter: selectedEncounter, lines }),
+      });
+      const data = await res.json();
+      setShareCode(data.code);
+    } catch (err) {
+      console.error("Error generating code:", err);
+    }
   };
 
   const handleCopyCode = () => {
     if (shareCode) navigator.clipboard.writeText(shareCode);
   };
 
-  const handleJoin = () => {
-    const savedMaps = JSON.parse(
-      localStorage.getItem("sharedMaps") || "{}"
-    );
+  const handleJoin = async () => {
+    if (!joinCode) return;
 
-    if (!savedMaps[joinCode]) return alert("Invalid code!");
+    try {
+      const res = await fetch(`http://localhost:4000/maps/${joinCode}`);
+      if (!res.ok) throw new Error("Invalid code");
+      const { raid, encounter, lines: savedLines } = await res.json();
 
-    const { raid, encounter, lines: savedLines } =
-      savedMaps[joinCode];
-
-    setSelectedRaid(raid);
-    setSelectedEncounter(encounter);
-    setLines(savedLines);
-    setUndoneLines([]);
+      setSelectedRaid(raid);
+      setSelectedEncounter(encounter);
+      setLines(savedLines);
+      setUndoneLines([]);
+    } catch (err) {
+      alert(err.message);
+    }
   };
 
   return (
     <main className="col-map-page">
+      {/* Raid / Encounter selectors */}
       <section className="map-controls">
         <label>
           Raid:
-          <select
-            value={selectedRaid}
-            onChange={(e) => setSelectedRaid(e.target.value)}
-          >
-            {raidNames.map((raid) => (
-              <option key={raid} value={raid}>
-                {raid}
-              </option>
-            ))}
+          <select value={selectedRaid} onChange={(e) => setSelectedRaid(e.target.value)}>
+            {raidNames.map((raid) => <option key={raid} value={raid}>{raid}</option>)}
           </select>
         </label>
 
         <label>
           Encounter:
-          <select
-            value={selectedEncounter}
-            onChange={(e) =>
-              setSelectedEncounter(e.target.value)
-            }
-          >
-            {encounterNames.map((enc) => (
-              <option key={enc} value={enc}>
-                {enc}
-              </option>
-            ))}
+          <select value={selectedEncounter} onChange={(e) => setSelectedEncounter(e.target.value)}>
+            {encounterNames.map((enc) => <option key={enc} value={enc}>{enc}</option>)}
           </select>
         </label>
       </section>
 
+      {/* Map drawing */}
       <section className="map-area">
         {currentMap && (
           <MapCanvas
@@ -330,38 +255,22 @@ export function ColMap() {
         )}
       </section>
 
+      {/* Share / Join */}
       <section className="collab">
         <div className="share">
           <h3>Share This Map</h3>
-          <button onClick={handleGenerateCode}>
-            Generate Code
-          </button>
-
+          <button onClick={handleGenerateCode}>Generate Code</button>
           {shareCode && (
             <div style={{ marginTop: "0.5rem" }}>
-              <span style={{ fontWeight: "bold" }}>
-                Code: {shareCode}
-              </span>
-              <button
-                style={{ marginLeft: "8px" }}
-                onClick={handleCopyCode}
-              >
-                Copy
-              </button>
+              <span style={{ fontWeight: "bold" }}>Code: {shareCode}</span>
+              <button style={{ marginLeft: "8px" }} onClick={handleCopyCode}>Copy</button>
             </div>
           )}
         </div>
 
         <div className="join">
           <h3>Join a Map</h3>
-          <input
-            type="text"
-            placeholder="Enter code"
-            value={joinCode}
-            onChange={(e) =>
-              setJoinCode(e.target.value.toUpperCase())
-            }
-          />
+          <input type="text" placeholder="Enter code" value={joinCode} onChange={(e) => setJoinCode(e.target.value.toUpperCase())} />
           <button onClick={handleJoin}>Join</button>
         </div>
       </section>
