@@ -20,7 +20,13 @@ export function About() {
 
       <img src="/raid.svg" alt="Destiny Logo" className="about-logo" />
 
-      <h3>Disclaimer</h3>
+      <h3>Disclaimers</h3>
+      <p>
+        Please note that the insults page calls out to the Evil Insult Generator api, which produces a number of comedic insults, as well as some truly 
+        vile and explicit insults. The creator of this website does not necissarily condone the content of the insults supplied, and in most cases does 
+        not believe that the insults are actually true. In the event that you are exposed to profane language when you do not want to, I apologize. You
+        have been warned.
+      </p>
       <p>
         Please note that RaidBuddy is an independent project and is not affiliated with Bungie or Destiny 2 in any official capacity. All content provided
         on this site is for educational and informational purposes only. Users are encouraged to support the official game and its developers by purchasing

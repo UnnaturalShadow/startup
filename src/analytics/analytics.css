@@ -179,3 +179,49 @@ canvas {
   line-height: 1.4;
   box-sizing: border-box;    /* Prevent padding from breaking height */
 }
+
+/* =========================
+   Evil Insult Display
+   ========================= */
+
+.insult-section {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  gap: 1rem;
+}
+
+.insult-display {
+  background: #1a001a;           /* darker, sinister background */
+  border: 2px solid #ff0000;     /* red border for drama */
+  padding: 1.5rem;
+  border-radius: 10px;
+  max-width: 700px;
+  text-align: center;
+  font-family: 'Nitro Eagle', system-ui, sans-serif;
+  font-size: 1.2rem;
+  color: #ff4444;                /* red-ish text */
+  box-shadow: 0 4px 12px rgba(255,0,0,0.3);
+  transition: transform 0.2s ease, box-shadow 0.2s ease;
+}
+
+.insult-display:hover {
+  transform: scale(1.02);
+  box-shadow: 0 6px 20px rgba(255,0,0,0.5);
+}
+
+.fetch-button {
+  font-weight: bold;
+  font-size: 1rem;
+  padding: 0.7rem 1.5rem;
+}
+
+.error-text {
+  color: #ff5555;
+  font-weight: bold;
+}
+
+.notes {
+  color: #ccc;
+  font-style: italic;
+}

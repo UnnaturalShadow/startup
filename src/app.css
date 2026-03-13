@@ -103,6 +103,7 @@ nav ul {
 .profile-button {
   color: #ddd;
   text-decoration: none;
+  background-color: #07004d;
   border: 1px solid #777;
   padding: 0.3em 0.75em;
   border-radius: 4px;

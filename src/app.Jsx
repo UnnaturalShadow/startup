@@ -1,7 +1,7 @@
 import React, { useEffect, useState } from 'react';
 import 'bootstrap/dist/css/bootstrap.min.css';
 import './app.css';
-import { BrowserRouter, NavLink, Route, Routes } from 'react-router-dom';
+import { BrowserRouter, NavLink, Route, Routes, useNavigate } from 'react-router-dom';
 import { About } from './about/about';
 import { Home } from './home/home';
 import { Analytics } from './analytics/analytics';
@@ -16,14 +16,46 @@ import { DSC } from './dsc/dsc';
 
 export default function App() {
   const [loggedIn, setLoggedIn] = useState(false);
+  const [checkingSession, setCheckingSession] = useState(true);
 
-  // Check session on load
+  // Check session on app mount
   useEffect(() => {
-    fetch('/session', { credentials: 'include' })
-      .then(res => res.json())
-      .then(data => setLoggedIn(data.loggedIn))
-      .catch(() => setLoggedIn(false));
+    async function checkSession() {
+      try {
+        const res = await fetch('/api/session', { credentials: 'include' });
+        if (res.ok) {
+          const data = await res.json();
+          setLoggedIn(data.loggedIn);
+        } else {
+          setLoggedIn(false);
+        }
+      } catch (err) {
+        console.error('Session check failed:', err);
+        setLoggedIn(false);
+      } finally {
+        setCheckingSession(false);
+      }
+    }
+    checkSession();
   }, []);
+
+  // Handle logout
+  async function handleLogout() {
+    try {
+      await fetch('/api/logout', {
+        method: 'POST',
+        credentials: 'include',
+      });
+    } catch (err) {
+      console.error('Logout failed', err);
+    } finally {
+      setLoggedIn(false);
+    }
+  }
+
+  if (checkingSession) {
+    return <p className="text-center mt-5">Checking login status...</p>;
+  }
 
   return (
     <BrowserRouter>
@@ -35,16 +67,18 @@ export default function App() {
               <ul>
                 <li className="nav-item"><NavLink to="/">Home</NavLink></li>
                 {loggedIn && <li className="nav-item"><NavLink to="/maps">Maps</NavLink></li>}
-                <li className="nav-item"><NavLink to="/analytics">Analytics</NavLink></li>
+                <li className="nav-item"><NavLink to="/analytics">Insults</NavLink></li>
                 <li className="nav-item"><NavLink to="/about">About</NavLink></li>
               </ul>
             </nav>
           </div>
 
           <div className="right-content">
-            <NavLink className="profile-button" to="/login">
-              {loggedIn ? 'Profile / Logout' : 'Login'}
-            </NavLink>
+            {loggedIn ? (
+              <button className="profile-button" onClick={handleLogout}>Logout</button>
+            ) : (
+              <NavLink className="profile-button" to="/login">Login</NavLink>
+            )}
           </div>
         </header>
 
@@ -54,10 +88,7 @@ export default function App() {
             {loggedIn && <Route path="/maps" element={<ColMap />} />}
             <Route path="/about" element={<About />} />
             <Route path="/analytics" element={<Analytics />} />
-            <Route
-              path="/login"
-              element={<Login setLoggedIn={setLoggedIn} />}
-            />
+            <Route path="/login" element={<Login setLoggedIn={setLoggedIn} />} />
             <Route path="/vog" element={<Vog />} />
             <Route path="/vow" element={<Vow />} />
             <Route path="/wish" element={<Wish />} />

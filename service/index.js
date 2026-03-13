@@ -3,7 +3,7 @@ import cors from "cors";
 import bcrypt from "bcryptjs";
 import cookieParser from "cookie-parser";
 import { v4 as uuidv4 } from "uuid";
-import { bungieService } from "./bungie.js";
+import fetch from "node-fetch";
 import path from "path";
 import { fileURLToPath } from 'url';
 import 'dotenv/config';
@@ -129,6 +129,66 @@ apiRouter.put("/maps/:code", requireAuth, (req, res) => {
 });
 
 // =========================
+// Bungie Analytics Endpoints (live, your account only)
+// =========================
+const MY_ACCOUNT = {
+  membershipType: 3, // Xbox
+  membershipId: "4611686018497927740",
+  displayName: "UnnaturalShadow",
+};
+
+const BUNGIE_API_KEY = process.env.VITE_BUNGIE_API_KEY;
+
+// Fetch player profile (hard-coded)
+apiRouter.get("/player", (_req, res) => {
+  res.json(MY_ACCOUNT);
+});
+
+// Fetch recent activities for first character
+apiRouter.get("/activities/:membershipType/:membershipId", async (_req, res) => {
+  try {
+    const { membershipType, membershipId } = MY_ACCOUNT;
+
+    // 1. Fetch profile to get character IDs
+    const profileUrl = `https://www.bungie.net/Platform/Destiny2/${membershipType}/Profile/${membershipId}/?components=200`;
+    const profileRes = await fetch(profileUrl, {
+      headers: { "X-API-Key": BUNGIE_API_KEY }
+    });
+    const profileJson = await profileRes.json();
+    const characters = profileJson.Response?.characters?.data;
+    if (!characters) return res.json([]);
+
+    // 2. Pick first character
+    const firstCharId = Object.keys(characters)[0];
+
+    // 3. Fetch activities for that character
+    const activitiesUrl = `https://www.bungie.net/Platform/Destiny2/${membershipType}/Account/${membershipId}/Character/${firstCharId}/Stats/Activities/`;
+    const activitiesRes = await fetch(activitiesUrl, {
+      headers: { "X-API-Key": BUNGIE_API_KEY }
+    });
+    const activitiesJson = await activitiesRes.json();
+    const activitiesRaw = activitiesJson.Response?.activities || [];
+
+    // 4. Map to frontend-friendly format
+    const activities = activitiesRaw.map((a, i) => ({
+      id: i,
+      name: a.activityDetails?.referenceId || "Activity",
+      period: a.period,
+      duration: a.values.activityDurationSeconds?.basic.displayValue || "0",
+      kills: Number(a.values.kills?.basic.value || 0),
+      deaths: Number(a.values.deaths?.basic.value || 0),
+      score: Number(a.values.score?.basic.value || 0),
+      completed: a.values.completed?.basic.value === 1,
+    }));
+
+    res.json(activities);
+  } catch (err) {
+    console.error(err);
+    res.status(500).json({ error: "Failed to fetch activities" });
+  }
+});
+
+// =========================
 // SPA fallback (non-API routes)
 // =========================
 app.get(/^\/(?!api).*/, (_req, res) => {
@@ -139,5 +199,27 @@ app.get(/^\/(?!api).*/, (_req, res) => {
 // Start server
 // =========================
 app.listen(port, () => {
-  console.log(`Auth + Maps service running on http://localhost:${port}`);
+  console.log(`Auth + Maps + Analytics service running on http://localhost:${port}`);
+
+  
+});
+
+// =========================
+// EvilInsult API Endpoint
+// =========================
+
+apiRouter.get("/insult", async (_req, res) => {
+  try {
+    const apiUrl = "https://evilinsult.com/generate_insult.php?lang=en&type=json";
+
+    // Fetch insult via backend to avoid CORS
+    const response = await fetch(apiUrl);
+    if (!response.ok) throw new Error("EvilInsult API error");
+
+    const data = await response.json(); // { insult: "..." }
+    res.json({ insult: data.insult });
+  } catch (err) {
+    console.error(err);
+    res.status(500).json({ insult: "Unable to insult at this time." });
+  }
 });
