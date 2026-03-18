@@ -1,17 +1,13 @@
-import express from "express";
-import cors from "cors";
-import bcrypt from "bcryptjs";
-import cookieParser from "cookie-parser";
-import { v4 as uuidv4 } from "uuid";
-import fetch from "node-fetch";
-import path from "path";
-import { fileURLToPath } from 'url';
-import 'dotenv/config';
+const express = require("express");
+const cors = require("cors");
+const bcrypt = require("bcryptjs");
+const cookieParser = require("cookie-parser");
+const { v4: uuidv4 } = require("uuid");
+const fetch = require("node-fetch");
+const path = require("path");
+require("dotenv").config();
 
-import * as DB from './database.js';
-
-const __filename = fileURLToPath(import.meta.url);
-const __dirname = path.dirname(__filename);
+const DB = require("./database.js");
 
 const app = express();
 const port = process.argv.length > 2 ? process.argv[2] : 4000;
@@ -26,23 +22,17 @@ app.use(cors({
   credentials: true
 }));
 
-app.use(express.static(path.resolve(__dirname, 'public')));
+app.use(express.static("public"));
 
 // =========================
-// Auth Middleware (DB-based)
+// Auth Middleware
 // =========================
 async function requireAuth(req, res, next) {
   const sessionId = req.cookies.sessionId;
+  if (!sessionId) return res.status(401).json({ message: "Unauthorized" });
 
-  if (!sessionId) {
-    return res.status(401).json({ message: "Unauthorized" });
-  }
-
-  const session = await db.getSession(sessionId);
-
-  if (!session) {
-    return res.status(401).json({ message: "Unauthorized" });
-  }
+  const session = await DB.getSession(sessionId);
+  if (!session) return res.status(401).json({ message: "Unauthorized" });
 
   req.userEmail = session.email;
   next();
@@ -58,23 +48,21 @@ app.use("/api", apiRouter);
 apiRouter.post("/register", async (req, res) => {
   const { email, password } = req.body;
 
-  const existingUser = await db.getUser(email);
+  const existingUser = await DB.getUser(email);
   if (existingUser) {
     return res.status(400).json({ message: "User already exists" });
   }
 
   const passwordHash = await bcrypt.hash(password, 10);
 
-  const user = {
+  await DB.addUser({
     email,
     passwordHash,
     createdAt: new Date(),
-  };
-
-  await db.addUser(user);
+  });
 
   const sessionId = uuidv4();
-  await db.createSession({ sessionId, email });
+  await DB.createSession({ sessionId, email });
 
   res.cookie("sessionId", sessionId, {
     httpOnly: true,
@@ -87,7 +75,7 @@ apiRouter.post("/register", async (req, res) => {
 apiRouter.post("/login", async (req, res) => {
   const { email, password } = req.body;
 
-  const user = await db.getUser(email);
+  const user = await DB.getUser(email);
   if (!user) {
     return res.status(400).json({ message: "User not found" });
   }
@@ -98,7 +86,7 @@ apiRouter.post("/login", async (req, res) => {
   }
 
   const sessionId = uuidv4();
-  await db.createSession({ sessionId, email });
+  await DB.createSession({ sessionId, email });
 
   res.cookie("sessionId", sessionId, {
     httpOnly: true,
@@ -112,7 +100,7 @@ apiRouter.post("/logout", async (req, res) => {
   const sessionId = req.cookies.sessionId;
 
   if (sessionId) {
-    await db.deleteSession(sessionId);
+    await DB.deleteSession(sessionId);
   }
 
   res.clearCookie("sessionId");
@@ -122,20 +110,15 @@ apiRouter.post("/logout", async (req, res) => {
 apiRouter.get("/session", async (req, res) => {
   const sessionId = req.cookies.sessionId;
 
-  if (!sessionId) {
-    return res.status(401).json({ loggedIn: false });
-  }
+  if (!sessionId) return res.status(401).json({ loggedIn: false });
 
-  const session = await db.getSession(sessionId);
-
-  if (!session) {
-    return res.status(401).json({ loggedIn: false });
-  }
+  const session = await DB.getSession(sessionId);
+  if (!session) return res.status(401).json({ loggedIn: false });
 
   res.json({ loggedIn: true, email: session.email });
 });
 
-// ----- Maps (DB-backed) -----
+// ----- Maps -----
 apiRouter.post("/maps", requireAuth, async (req, res) => {
   const { raid, encounter, lines } = req.body;
 
@@ -148,10 +131,10 @@ apiRouter.post("/maps", requireAuth, async (req, res) => {
 
   do {
     code = Math.random().toString(36).substring(2, 8).toUpperCase();
-    exists = await db.getMap(code);
+    exists = await DB.getMap(code);
   } while (exists);
 
-  const map = {
+  await DB.createMap({
     code,
     raid,
     encounter,
@@ -159,31 +142,58 @@ apiRouter.post("/maps", requireAuth, async (req, res) => {
     owner: req.userEmail,
     createdAt: new Date(),
     updatedAt: new Date(),
-  };
-
-  await db.createMap(map);
+  });
 
   res.json({ code });
 });
 
 apiRouter.get("/maps/:code", requireAuth, async (req, res) => {
-  const map = await db.getMap(req.params.code);
-
-  if (!map) {
-    return res.status(404).json({ error: "Code not found" });
-  }
-
+  const map = await DB.getMap(req.params.code);
+  if (!map) return res.status(404).json({ error: "Code not found" });
   res.json(map);
 });
 
 apiRouter.put("/maps/:code", requireAuth, async (req, res) => {
-  const map = await db.getMap(req.params.code);
+  const map = await DB.getMap(req.params.code);
+  if (!map) return res.status(404).json({ error: "Code not found" });
 
-  if (!map) {
-    return res.status(404).json({ error: "Code not found" });
-  }
-
-  await db.updateMap(req.params.code, req.body.lines);
-
+  await DB.updateMap(req.params.code, req.body.lines);
   res.json({ success: true });
+});
+
+// ----- Bungie -----
+const MY_ACCOUNT = {
+  membershipType: 3,
+  membershipId: "4611686018497927740",
+};
+
+const BUNGIE_API_KEY = process.env.VITE_BUNGIE_API_KEY;
+
+apiRouter.get("/player", (_req, res) => {
+  res.json(MY_ACCOUNT);
+});
+
+// ----- Insult -----
+apiRouter.get("/insult", async (_req, res) => {
+  try {
+    const response = await fetch("https://evilinsult.com/generate_insult.php?lang=en&type=json");
+    const data = await response.json();
+    res.json({ insult: data.insult });
+  } catch {
+    res.status(500).json({ insult: "Unable to insult at this time." });
+  }
+});
+
+// =========================
+// Fallback
+// =========================
+app.use((_req, res) => {
+  res.sendFile("index.html", { root: "public" });
+});
+
+// =========================
+// Start
+// =========================
+app.listen(port, () => {
+  console.log(`Server running on port ${port}`);
 });

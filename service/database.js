@@ -11,15 +11,15 @@ const sessionCollection = db.collection('session');
 const mapCollection = db.collection('map');
 
 // =========================
-// Connect once at startup
+// Test DB connection
 // =========================
 (async function testConnection() {
   try {
     await client.connect();
     await db.command({ ping: 1 });
-    console.log('Connected to database');
+    console.log(`Connected to database`);
   } catch (ex) {
-    console.error(`Unable to connect to database: ${ex.message}`);
+    console.log(`Unable to connect to database with ${url} because ${ex.message}`);
     process.exit(1);
   }
 })();
@@ -79,6 +79,9 @@ async function updateMap(code, lines) {
   );
 }
 
+// =========================
+// Exports
+// =========================
 module.exports = {
   // users
   getUser,
