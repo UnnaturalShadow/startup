@@ -104,8 +104,17 @@ For this deliverable I added a backend endpoint that fetches a random insult fro
 - [x] I completed the prerequisites for this deliverable (Simon deployed, GitHub link, Git commits)
 - [x] **Node.js/Express HTTP service** – Added an endpoint `/api/insult` that calls a public insult API via fetch and returns the JSON response.  
 - [x] **Frontend call to backend** – The analytics page (`Analytics.jsx`) now fetches the insult through this endpoint when the user presses the “Get Insult” button.  
-- [x] **Static middleware** – Frontend still served via Express static middleware.  
+- [x] **Static middleware** – Frontend served via Express static middleware.  
 - [x] **Backend service endpoints** – Endpoint implemented and tested; returns a single random insult each call.  
-- [x] **Frontend calls service endpoints** – The button on the analytics page triggers a fetch to `/api/insult` and displays the result on the page.  
-- [ ] **Supports registration, login, logout, and restricted endpoint** – Not applicable for this endpoint.  
-- [ ] **Uses BCrypt to hash passwords** – Not applicable for this endpoint.
+- [x] **Frontend calls service endpoints** – Logistics of code generation and line tracking as well as login auth are now handled by api endpoints and stored in the backend.  
+- [ ] **Supports registration, login, logout, and restricted endpoint** – Register/login/logout remain functional, now handled by endpoint calls, auth data is stored in backend for now. Maps page is now restricted behind login. 
+- [ ] **Uses BCrypt to hash passwords** – Passwords secured!
+
+
+## DB/Login deliverable
+
+For this deliverable I now store maps with their associated drawings and codes in the db. User data is also stored in the db.
+
+- [x] I completed the prerequisites for this deliverable (Simon deployed, GitHub link, Git commits)
+- [x] **Stores data in MongoDB** - Stores map information (image, lines, code). See database.js
+- [x] **Use MongoDB to store credentials** - Stores user and credentials. See database.js
