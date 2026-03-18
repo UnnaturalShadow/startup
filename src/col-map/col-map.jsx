@@ -24,7 +24,7 @@ const useImage = (url) => {
 /* =========================
    MapCanvas (Responsive)
    ========================= */
-function MapCanvas({ imageSrc, lines, setLines, undoneLines, setUndoneLines }) {
+function MapCanvas({ imageSrc, lines, setLines, undoneLines, setUndoneLines, shareCode }) {
   const backgroundImage = useImage(imageSrc);
 
   const containerRef = useRef(null);
@@ -74,10 +74,8 @@ function MapCanvas({ imageSrc, lines, setLines, undoneLines, setUndoneLines }) {
   const handlePointerDown = (e) => {
     isDrawing.current = true;
     const pos = e.target.getStage().getPointerPosition();
-    setLines([
-      ...lines,
-      { points: normalizePoint(pos), color: brushColor, width: brushWidth },
-    ]);
+    const newLine = { points: normalizePoint(pos), color: brushColor, width: brushWidth };
+    setLines([...lines, newLine]);
     setUndoneLines([]);
   };
 
@@ -86,24 +84,43 @@ function MapCanvas({ imageSrc, lines, setLines, undoneLines, setUndoneLines }) {
     const stage = e.target.getStage();
     const pos = stage.getPointerPosition();
 
-    const lastLine = lines[lines.length - 1];
+    const lastLine = { ...lines[lines.length - 1] };
     lastLine.points = lastLine.points.concat(normalizePoint(pos));
-    lines.splice(lines.length - 1, 1, lastLine);
-    setLines([...lines]);
+    setLines([...lines.slice(0, -1), lastLine]);
   };
 
-  const handlePointerUp = () => {
+  const handlePointerUp = async () => {
     isDrawing.current = false;
+    const lastLine = lines[lines.length - 1];
+    if (!lastLine || !shareCode) return;
+
+    try {
+      await fetch(`/api/maps/${shareCode}/lines`, {
+        method: "POST",
+        headers: { "Content-Type": "application/json" },
+        body: JSON.stringify(lastLine),
+      });
+    } catch (err) {
+      console.error("Failed to append line to DB:", err);
+    }
   };
 
   /* -------------------------
      Undo / Redo / Clear
      ------------------------- */
-  const handleUndo = () => {
+  const handleUndo = async () => {
     if (!lines.length) return;
     const last = lines[lines.length - 1];
     setLines(lines.slice(0, -1));
     setUndoneLines([last, ...undoneLines]);
+
+    if (!shareCode) return;
+
+    try {
+      await fetch(`/api/maps/${shareCode}/lines/last`, { method: "DELETE" });
+    } catch (err) {
+      console.error("Failed to remove last line from DB:", err);
+    }
   };
 
   const handleRedo = () => {
@@ -113,9 +130,21 @@ function MapCanvas({ imageSrc, lines, setLines, undoneLines, setUndoneLines }) {
     setUndoneLines(rest);
   };
 
-  const handleClear = () => {
+  const handleClear = async () => {
     setLines([]);
     setUndoneLines([]);
+
+    if (!shareCode) return;
+
+    try {
+      await fetch(`/api/maps/${shareCode}`, {
+        method: "PUT",
+        headers: { "Content-Type": "application/json" },
+        body: JSON.stringify({ lines: [] }),
+      });
+    } catch (err) {
+      console.error("Failed to clear map in DB:", err);
+    }
   };
 
   /* -------------------------
@@ -174,7 +203,7 @@ function MapCanvas({ imageSrc, lines, setLines, undoneLines, setUndoneLines }) {
               key={i}
               points={denormalizePoints(line.points)}
               stroke={line.color}
-              strokeWidth={line.width * scale} // scale width for device
+              strokeWidth={line.width * scale}
               tension={0.5}
               lineCap="round"
               lineJoin="round"
@@ -246,6 +275,7 @@ export function ColMap() {
       setSelectedEncounter(encounter);
       setLines(savedLines);
       setUndoneLines([]);
+      setShareCode(joinCode);
     } catch (err) {
       alert(err.message);
     }
@@ -279,6 +309,7 @@ export function ColMap() {
             setLines={setLines}
             undoneLines={undoneLines}
             setUndoneLines={setUndoneLines}
+            shareCode={shareCode}
           />
         )}
       </section>

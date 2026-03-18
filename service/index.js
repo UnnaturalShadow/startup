@@ -153,35 +153,31 @@ apiRouter.get("/maps/:code", requireAuth, async (req, res) => {
   res.json(map);
 });
 
-apiRouter.put("/maps/:code", requireAuth, async (req, res) => {
-  const map = await DB.getMap(req.params.code);
-  if (!map) return res.status(404).json({ error: "Code not found" });
+// Append a single line to map (called whenever user draws a line)
+apiRouter.post("/maps/:code/lines", requireAuth, async (req, res) => {
+  const { points, color, width } = req.body;
 
-  await DB.updateMap(req.params.code, req.body.lines);
+  if (!points || !points.length) return res.status(400).json({ error: "Invalid line data" });
+
+  const map = await DB.getMap(req.params.code);
+  if (!map) return res.status(404).json({ error: "Map not found" });
+
+  // Append line to map in DB
+  const newLines = [...(map.lines || []), { points, color, width }];
+  await DB.updateMap(req.params.code, newLines);
+
   res.json({ success: true });
 });
 
-// ----- Bungie -----
-const MY_ACCOUNT = {
-  membershipType: 3,
-  membershipId: "4611686018497927740",
-};
+// Undo last line
+apiRouter.delete("/maps/:code/lines/last", requireAuth, async (req, res) => {
+  const map = await DB.getMap(req.params.code);
+  if (!map) return res.status(404).json({ error: "Map not found" });
 
-const BUNGIE_API_KEY = process.env.VITE_BUNGIE_API_KEY;
+  const newLines = (map.lines || []).slice(0, -1);
+  await DB.updateMap(req.params.code, newLines);
 
-apiRouter.get("/player", (_req, res) => {
-  res.json(MY_ACCOUNT);
-});
-
-// ----- Insult -----
-apiRouter.get("/insult", async (_req, res) => {
-  try {
-    const response = await fetch("https://evilinsult.com/generate_insult.php?lang=en&type=json");
-    const data = await response.json();
-    res.json({ insult: data.insult });
-  } catch {
-    res.status(500).json({ insult: "Unable to insult at this time." });
-  }
+  res.json({ success: true });
 });
 
 // =========================
