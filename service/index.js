@@ -3,8 +3,8 @@ const cors = require("cors");
 const bcrypt = require("bcryptjs");
 const cookieParser = require("cookie-parser");
 const { v4: uuidv4 } = require("uuid");
-const fetch = require("node-fetch");
 const path = require("path");
+// const fetch = (...args) => import('node-fetch').then(({ default: fetch }) => fetch(...args));
 require("dotenv").config();
 
 const DB = require("./database.js");
@@ -178,6 +178,21 @@ apiRouter.delete("/maps/:code/lines/last", requireAuth, async (req, res) => {
   await DB.updateMap(req.params.code, newLines);
 
   res.json({ success: true });
+});
+
+apiRouter.get("/insult", async (_req, res) => {
+  try {
+    const response = await fetch("https://evilinsult.com/generate_insult.php?lang=en&type=json");
+    if (!response.ok) throw new Error(`External API returned ${response.status}`);
+    
+    const data = await response.json();
+    if (!data.insult) throw new Error("Invalid response from insult API");
+    
+    res.json({ insult: data.insult });
+  } catch (err) {
+    console.error("Insult API error:", err);
+    res.status(500).json({ error: "Unable to insult at this time." });
+  }
 });
 
 // =========================
