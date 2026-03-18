@@ -1,28 +1,38 @@
 const { MongoClient } = require('mongodb');
-const config = require('./dbConfig.json')
+const config = require('./dbConfig.json');
+
 const url = `mongodb+srv://${config.username}:${config.password}@${config.hostname}`;
 const client = new MongoClient(url);
+
 const db = client.db('raid');
-const userCollection = db.collection(user)
 
+const userCollection = db.collection('user');
+const sessionCollection = db.collection('session');
+const mapCollection = db.collection('map');
 
+// =========================
+// Connect once at startup
+// =========================
 (async function testConnection() {
   try {
+    await client.connect();
     await db.command({ ping: 1 });
-    console.log(`Connect to database`);
+    console.log('Connected to database');
   } catch (ex) {
-    console.log(`Unable to connect to database with ${url} because ${ex.message}`);
+    console.error(`Unable to connect to database: ${ex.message}`);
     process.exit(1);
   }
 })();
 
-
+// =========================
+// User Functions
+// =========================
 function getUser(email) {
-  return userCollection.findOne({ email: email });
+  return userCollection.findOne({ email });
 }
 
 function getUserByToken(token) {
-  return userCollection.findOne({ token: token });
+  return userCollection.findOne({ token });
 }
 
 async function addUser(user) {
@@ -30,19 +40,59 @@ async function addUser(user) {
 }
 
 async function updateUser(user) {
-  await userCollection.updateOne({ email: user.email }, { $set: user });
+  await userCollection.updateOne(
+    { email: user.email },
+    { $set: user }
+  );
 }
 
-async function updateUserRemoveAuth(user) {
-  await userCollection.updateOne({ email: user.email }, { $unset: { token: 1 } });
+// =========================
+// Session Functions
+// =========================
+async function createSession(session) {
+  await sessionCollection.insertOne(session);
 }
 
+function getSession(sessionId) {
+  return sessionCollection.findOne({ sessionId });
+}
 
+async function deleteSession(sessionId) {
+  await sessionCollection.deleteOne({ sessionId });
+}
+
+// =========================
+// Map Functions
+// =========================
+async function createMap(map) {
+  await mapCollection.insertOne(map);
+}
+
+function getMap(code) {
+  return mapCollection.findOne({ code });
+}
+
+async function updateMap(code, lines) {
+  await mapCollection.updateOne(
+    { code },
+    { $set: { lines, updatedAt: new Date() } }
+  );
+}
 
 module.exports = {
+  // users
   getUser,
   getUserByToken,
   addUser,
   updateUser,
-  updateUserRemoveAuth,
+
+  // sessions
+  createSession,
+  getSession,
+  deleteSession,
+
+  // maps
+  createMap,
+  getMap,
+  updateMap,
 };
