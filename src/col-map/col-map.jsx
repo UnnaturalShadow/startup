@@ -3,6 +3,7 @@ import React, { useState, useMemo, useEffect, useRef } from "react";
 import { Stage, Layer, Image, Line } from "react-konva";
 import { MAPS } from "./mapLookup.js";
 import "./map.css";
+import { v4 as uuidv4 } from "uuid"; // <--- added for unique line IDs
 
 /* =========================
    Helper: Load Image
@@ -38,7 +39,7 @@ function MapCanvas({ imageSrc, lines, setLines, undoneLines, setUndoneLines, sha
 
   /* -------------------------
      WebSocket Connection
-     ------------------------- */
+  ------------------------- */
   useEffect(() => {
     if (!shareCode) return;
 
@@ -58,11 +59,12 @@ function MapCanvas({ imageSrc, lines, setLines, undoneLines, setUndoneLines, sha
       const msg = JSON.parse(event.data);
 
       if (msg.type === "stroke") {
-        setLines((prev) => [...prev, msg.stroke]);
+        const stroke = msg.stroke.id ? msg.stroke : { ...msg.stroke, id: uuidv4() };
+        setLines((prev) => [...prev, stroke]);
       }
 
       if (msg.type === "delete") {
-        setLines((prev) => prev.slice(0, -1));
+        setLines(prev => prev.filter(line => line.id !== msg.lineId));
       }
 
       if (msg.type === "clear") {
@@ -80,7 +82,7 @@ function MapCanvas({ imageSrc, lines, setLines, undoneLines, setUndoneLines, sha
 
   /* -------------------------
      Resize Stage Responsively
-     ------------------------- */
+  ------------------------- */
   useEffect(() => {
     const resize = () => {
       if (!containerRef.current) return;
@@ -95,7 +97,7 @@ function MapCanvas({ imageSrc, lines, setLines, undoneLines, setUndoneLines, sha
 
   /* -------------------------
      Prevent scrolling while drawing
-     ------------------------- */
+  ------------------------- */
   useEffect(() => {
     const preventScroll = (e) => {
       if (isDrawing.current) e.preventDefault();
@@ -106,18 +108,23 @@ function MapCanvas({ imageSrc, lines, setLines, undoneLines, setUndoneLines, sha
 
   /* -------------------------
      Normalize / Denormalize
-     ------------------------- */
+  ------------------------- */
   const normalizePoint = (pos) => [pos.x / stageSize.width, pos.y / stageSize.height];
   const denormalizePoints = (points) =>
     points.map((p, i) => (i % 2 === 0 ? p * stageSize.width : p * stageSize.height));
 
   /* -------------------------
      Drawing Events
-     ------------------------- */
+  ------------------------- */
   const handlePointerDown = (e) => {
     isDrawing.current = true;
     const pos = e.target.getStage().getPointerPosition();
-    const newLine = { points: normalizePoint(pos), color: brushColor, width: brushWidth };
+    const newLine = {
+      id: uuidv4(), // <--- added unique ID
+      points: normalizePoint(pos),
+      color: brushColor,
+      width: brushWidth
+    };
     setLines([...lines, newLine]);
     setUndoneLines([]);
   };
@@ -145,21 +152,12 @@ function MapCanvas({ imageSrc, lines, setLines, undoneLines, setUndoneLines, sha
       }));
     }
 
-    // Persist to DB
-    try {
-      await fetch(`/api/maps/${shareCode}/lines`, {
-        method: "POST",
-        headers: { "Content-Type": "application/json" },
-        body: JSON.stringify(lastLine),
-      });
-    } catch (err) {
-      console.error("Failed to append line to DB:", err);
-    }
+    // Optional: persist to DB later (batch save)
   };
 
   /* -------------------------
      Undo / Redo / Clear
-     ------------------------- */
+  ------------------------- */
   const handleUndo = async () => {
     if (!lines.length) return;
     const last = lines[lines.length - 1];
@@ -167,18 +165,12 @@ function MapCanvas({ imageSrc, lines, setLines, undoneLines, setUndoneLines, sha
     setLines(lines.slice(0, -1));
     setUndoneLines([last, ...undoneLines]);
 
-    // Send via WebSocket
+    // Send via WebSocket with ID
     if (socketRef.current) {
-      socketRef.current.send(JSON.stringify({ type: "delete" }));
+      socketRef.current.send(JSON.stringify({ type: "delete", lineId: last.id }));
     }
 
-    if (!shareCode) return;
-
-    try {
-      await fetch(`/api/maps/${shareCode}/lines/last`, { method: "DELETE" });
-    } catch (err) {
-      console.error("Failed to remove last line from DB:", err);
-    }
+    // Optional: remove last line from DB
   };
 
   const handleRedo = () => {
@@ -197,22 +189,12 @@ function MapCanvas({ imageSrc, lines, setLines, undoneLines, setUndoneLines, sha
       socketRef.current.send(JSON.stringify({ type: "clear" }));
     }
 
-    if (!shareCode) return;
-
-    try {
-      await fetch(`/api/maps/${shareCode}`, {
-        method: "PUT",
-        headers: { "Content-Type": "application/json" },
-        body: JSON.stringify({ lines: [] }),
-      });
-    } catch (err) {
-      console.error("Failed to clear map in DB:", err);
-    }
+    // Optional: clear map in DB
   };
 
   /* -------------------------
      Image Scaling
-     ------------------------- */
+  ------------------------- */
   const scale = backgroundImage
     ? Math.min(stageSize.width / backgroundImage.width, stageSize.height / backgroundImage.height)
     : 1;
@@ -282,7 +264,7 @@ function MapCanvas({ imageSrc, lines, setLines, undoneLines, setUndoneLines, sha
 
           {lines.map((line, i) => (
             <Line
-              key={i}
+              key={line.id} // <--- changed key to unique ID
               points={denormalizePoints(line.points)}
               stroke={line.color}
               strokeWidth={line.width * scale}
@@ -299,7 +281,7 @@ function MapCanvas({ imageSrc, lines, setLines, undoneLines, setUndoneLines, sha
 
 /* =========================
    ColMap Page (UNCHANGED)
-   ========================= */
+  ========================= */
 export function ColMap() {
   const raidNames = Object.keys(MAPS);
   const [selectedRaid, setSelectedRaid] = useState(raidNames[0]);

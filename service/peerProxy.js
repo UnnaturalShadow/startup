@@ -7,15 +7,12 @@ function peerProxy(httpServer) {
   const rooms = new Map();
 
   function joinRoom(socket, roomId) {
-    // Leave old room if exists
     if (socket.roomId && rooms.has(socket.roomId)) {
       rooms.get(socket.roomId).delete(socket);
     }
-
     if (!rooms.has(roomId)) {
       rooms.set(roomId, new Set());
     }
-
     rooms.get(roomId).add(socket);
     socket.roomId = roomId;
   }
@@ -25,20 +22,13 @@ function peerProxy(httpServer) {
 
     socket.on('message', function message(data) {
       let msg;
+      try { msg = JSON.parse(data); } catch { return; }
 
-      try {
-        msg = JSON.parse(data);
-      } catch {
-        return; // ignore invalid JSON
-      }
-
-      // Handle join separately
       if (msg.type === 'join') {
         joinRoom(socket, msg.roomId);
         return;
       }
 
-      // Broadcast ONLY to same room
       const room = rooms.get(socket.roomId);
       if (!room) return;
 
@@ -55,16 +45,12 @@ function peerProxy(httpServer) {
       }
     });
 
-    socket.on('pong', () => {
-      socket.isAlive = true;
-    });
+    socket.on('pong', () => { socket.isAlive = true; });
   });
 
-  // Keep alive (unchanged from template)
   setInterval(() => {
     socketServer.clients.forEach((client) => {
       if (client.isAlive === false) return client.terminate();
-
       client.isAlive = false;
       client.ping();
     });

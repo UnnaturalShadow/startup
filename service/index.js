@@ -4,10 +4,11 @@ const bcrypt = require("bcryptjs");
 const cookieParser = require("cookie-parser");
 const { v4: uuidv4 } = require("uuid");
 const path = require("path");
-// const fetch = (...args) => import('node-fetch').then(({ default: fetch }) => fetch(...args));
 require("dotenv").config();
 
 const DB = require("./database.js");
+const { peerProxy } = require("./peerProxy.js");
+const http = require("http"); // needed to create server for WS
 
 const app = express();
 const port = process.argv.length > 2 ? process.argv[2] : 4000;
@@ -153,7 +154,6 @@ apiRouter.get("/maps/:code", requireAuth, async (req, res) => {
   res.json(map);
 });
 
-// Append a single line to map (called whenever user draws a line)
 apiRouter.post("/maps/:code/lines", requireAuth, async (req, res) => {
   const { points, color, width } = req.body;
 
@@ -162,14 +162,12 @@ apiRouter.post("/maps/:code/lines", requireAuth, async (req, res) => {
   const map = await DB.getMap(req.params.code);
   if (!map) return res.status(404).json({ error: "Map not found" });
 
-  // Append line to map in DB
   const newLines = [...(map.lines || []), { points, color, width }];
   await DB.updateMap(req.params.code, newLines);
 
   res.json({ success: true });
 });
 
-// Undo last line
 apiRouter.delete("/maps/:code/lines/last", requireAuth, async (req, res) => {
   const map = await DB.getMap(req.params.code);
   if (!map) return res.status(404).json({ error: "Map not found" });
@@ -184,10 +182,10 @@ apiRouter.get("/insult", async (_req, res) => {
   try {
     const response = await fetch("https://evilinsult.com/generate_insult.php?lang=en&type=json");
     if (!response.ok) throw new Error(`External API returned ${response.status}`);
-    
+
     const data = await response.json();
     if (!data.insult) throw new Error("Invalid response from insult API");
-    
+
     res.json({ insult: data.insult });
   } catch (err) {
     console.error("Insult API error:", err);
@@ -203,8 +201,11 @@ app.use((_req, res) => {
 });
 
 // =========================
-// Start
+// Start HTTP server and attach WebSocket proxy
 // =========================
-app.listen(port, () => {
+const httpServer = http.createServer(app);
+peerProxy(httpServer);
+
+httpServer.listen(port, () => {
   console.log(`Server running on port ${port}`);
 });
