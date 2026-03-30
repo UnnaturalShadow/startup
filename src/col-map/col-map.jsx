@@ -22,18 +22,61 @@ const useImage = (url) => {
 };
 
 /* =========================
-   MapCanvas (Responsive)
+   MapCanvas (Responsive + WS)
    ========================= */
 function MapCanvas({ imageSrc, lines, setLines, undoneLines, setUndoneLines, shareCode }) {
   const backgroundImage = useImage(imageSrc);
 
   const containerRef = useRef(null);
   const isDrawing = useRef(false);
+  const socketRef = useRef(null);
 
   const [brushColor, setBrushColor] = useState("#ff0000");
   const [brushWidth, setBrushWidth] = useState(4);
 
   const [stageSize, setStageSize] = useState({ width: 1000, height: 600 });
+
+  /* -------------------------
+     WebSocket Connection
+     ------------------------- */
+  useEffect(() => {
+    if (!shareCode) return;
+
+    const protocol = window.location.protocol === "https:" ? "wss" : "ws";
+    const socket = new WebSocket(`${protocol}://${window.location.host}`);
+
+    socketRef.current = socket;
+
+    socket.onopen = () => {
+      socket.send(JSON.stringify({
+        type: "join",
+        roomId: shareCode,
+      }));
+    };
+
+    socket.onmessage = (event) => {
+      const msg = JSON.parse(event.data);
+
+      if (msg.type === "stroke") {
+        setLines((prev) => [...prev, msg.stroke]);
+      }
+
+      if (msg.type === "delete") {
+        setLines((prev) => prev.slice(0, -1));
+      }
+
+      if (msg.type === "clear") {
+        setLines([]);
+        setUndoneLines([]);
+      }
+    };
+
+    socket.onclose = () => {
+      socketRef.current = null;
+    };
+
+    return () => socket.close();
+  }, [shareCode, setLines, setUndoneLines]);
 
   /* -------------------------
      Resize Stage Responsively
@@ -42,7 +85,7 @@ function MapCanvas({ imageSrc, lines, setLines, undoneLines, setUndoneLines, sha
     const resize = () => {
       if (!containerRef.current) return;
       const width = containerRef.current.offsetWidth;
-      const height = width * (600 / 1000); // keep 16:9
+      const height = width * (600 / 1000);
       setStageSize({ width, height });
     };
     resize();
@@ -62,7 +105,7 @@ function MapCanvas({ imageSrc, lines, setLines, undoneLines, setUndoneLines, sha
   }, []);
 
   /* -------------------------
-     Convert absolute pos -> normalized
+     Normalize / Denormalize
      ------------------------- */
   const normalizePoint = (pos) => [pos.x / stageSize.width, pos.y / stageSize.height];
   const denormalizePoints = (points) =>
@@ -94,6 +137,15 @@ function MapCanvas({ imageSrc, lines, setLines, undoneLines, setUndoneLines, sha
     const lastLine = lines[lines.length - 1];
     if (!lastLine || !shareCode) return;
 
+    // Send via WebSocket
+    if (socketRef.current) {
+      socketRef.current.send(JSON.stringify({
+        type: "stroke",
+        stroke: lastLine,
+      }));
+    }
+
+    // Persist to DB
     try {
       await fetch(`/api/maps/${shareCode}/lines`, {
         method: "POST",
@@ -111,8 +163,14 @@ function MapCanvas({ imageSrc, lines, setLines, undoneLines, setUndoneLines, sha
   const handleUndo = async () => {
     if (!lines.length) return;
     const last = lines[lines.length - 1];
+
     setLines(lines.slice(0, -1));
     setUndoneLines([last, ...undoneLines]);
+
+    // Send via WebSocket
+    if (socketRef.current) {
+      socketRef.current.send(JSON.stringify({ type: "delete" }));
+    }
 
     if (!shareCode) return;
 
@@ -133,6 +191,11 @@ function MapCanvas({ imageSrc, lines, setLines, undoneLines, setUndoneLines, sha
   const handleClear = async () => {
     setLines([]);
     setUndoneLines([]);
+
+    // Send via WebSocket
+    if (socketRef.current) {
+      socketRef.current.send(JSON.stringify({ type: "clear" }));
+    }
 
     if (!shareCode) return;
 
@@ -157,18 +220,37 @@ function MapCanvas({ imageSrc, lines, setLines, undoneLines, setUndoneLines, sha
   return (
     <div
       ref={containerRef}
-      style={{ width: "100%", maxWidth: "1000px", margin: "0 auto", display: "flex", flexDirection: "column", gap: "8px" }}
+      style={{
+        width: "100%",
+        maxWidth: "1000px",
+        margin: "0 auto",
+        display: "flex",
+        flexDirection: "column",
+        gap: "8px",
+      }}
     >
       {/* Controls */}
       <div className="map-canvas-controls">
         <label>
           Brush Color:
-          <input type="color" value={brushColor} onChange={(e) => setBrushColor(e.target.value)} style={{ marginLeft: "4px" }} />
+          <input
+            type="color"
+            value={brushColor}
+            onChange={(e) => setBrushColor(e.target.value)}
+            style={{ marginLeft: "4px" }}
+          />
         </label>
 
         <label>
           Brush Width:
-          <input type="number" min="1" max="50" value={brushWidth} onChange={(e) => setBrushWidth(Number(e.target.value))} style={{ width: "60px", marginLeft: "4px" }} />
+          <input
+            type="number"
+            min="1"
+            max="50"
+            value={brushWidth}
+            onChange={(e) => setBrushWidth(Number(e.target.value))}
+            style={{ width: "60px", marginLeft: "4px" }}
+          />
         </label>
 
         <button onClick={handleUndo} disabled={!lines.length}>Undo</button>
@@ -216,7 +298,7 @@ function MapCanvas({ imageSrc, lines, setLines, undoneLines, setUndoneLines, sha
 }
 
 /* =========================
-   ColMap Page
+   ColMap Page (UNCHANGED)
    ========================= */
 export function ColMap() {
   const raidNames = Object.keys(MAPS);
@@ -231,7 +313,6 @@ export function ColMap() {
   const [shareCode, setShareCode] = useState("");
   const [joinCode, setJoinCode] = useState("");
 
-  // Reset encounter on raid change
   useEffect(() => {
     setSelectedEncounter(encounterNames[0]);
     setLines([]);
@@ -240,9 +321,6 @@ export function ColMap() {
 
   const currentMap = MAPS[selectedRaid]?.[selectedEncounter];
 
-  /* -------------------------
-     Backend Integration
-     ------------------------- */
   const handleGenerateCode = async () => {
     if (!selectedRaid || !selectedEncounter) return;
 
@@ -283,7 +361,6 @@ export function ColMap() {
 
   return (
     <main className="col-map-page">
-      {/* Raid / Encounter selectors */}
       <section className="map-controls">
         <label>
           Raid:
@@ -300,7 +377,6 @@ export function ColMap() {
         </label>
       </section>
 
-      {/* Map drawing */}
       <section className="map-area">
         {currentMap && (
           <MapCanvas
@@ -314,7 +390,6 @@ export function ColMap() {
         )}
       </section>
 
-      {/* Share / Join */}
       <section className="collab">
         <div className="share">
           <h3>Share This Map</h3>
@@ -329,7 +404,12 @@ export function ColMap() {
 
         <div className="join">
           <h3>Join a Map</h3>
-          <input type="text" placeholder="Enter code" value={joinCode} onChange={(e) => setJoinCode(e.target.value.toUpperCase())} />
+          <input
+            type="text"
+            placeholder="Enter code"
+            value={joinCode}
+            onChange={(e) => setJoinCode(e.target.value.toUpperCase())}
+          />
           <button onClick={handleJoin}>Join</button>
         </div>
       </section>
