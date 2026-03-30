@@ -3,7 +3,7 @@ import React, { useState, useMemo, useEffect, useRef } from "react";
 import { Stage, Layer, Image, Line } from "react-konva";
 import { MAPS } from "./mapLookup.js";
 import "./map.css";
-import { v4 as uuidv4 } from "uuid"; // <--- added for unique line IDs
+import { v4 as uuidv4 } from "uuid";
 
 /* =========================
    Helper: Load Image
@@ -13,7 +13,6 @@ const useImage = (url) => {
 
   useEffect(() => {
     if (!url) return;
-
     const img = new window.Image();
     img.src = url;
     img.onload = () => setImage(img);
@@ -27,14 +26,12 @@ const useImage = (url) => {
    ========================= */
 function MapCanvas({ imageSrc, lines, setLines, undoneLines, setUndoneLines, shareCode }) {
   const backgroundImage = useImage(imageSrc);
-
   const containerRef = useRef(null);
   const isDrawing = useRef(false);
   const socketRef = useRef(null);
 
   const [brushColor, setBrushColor] = useState("#ff0000");
   const [brushWidth, setBrushWidth] = useState(4);
-
   const [stageSize, setStageSize] = useState({ width: 1000, height: 600 });
 
   /* -------------------------
@@ -44,7 +41,7 @@ function MapCanvas({ imageSrc, lines, setLines, undoneLines, setUndoneLines, sha
     if (!shareCode) return;
 
     const protocol = window.location.protocol === "https:" ? "wss" : "ws";
-    const socket = new WebSocket(`${protocol}://${window.location.host}`);
+    const socket = new WebSocket(`${protocol}://${window.location.hostname}:4000`); // <--- explicit port
 
     socketRef.current = socket;
 
@@ -120,7 +117,7 @@ function MapCanvas({ imageSrc, lines, setLines, undoneLines, setUndoneLines, sha
     isDrawing.current = true;
     const pos = e.target.getStage().getPointerPosition();
     const newLine = {
-      id: uuidv4(), // <--- added unique ID
+      id: uuidv4(),
       points: normalizePoint(pos),
       color: brushColor,
       width: brushWidth
@@ -133,44 +130,36 @@ function MapCanvas({ imageSrc, lines, setLines, undoneLines, setUndoneLines, sha
     if (!isDrawing.current) return;
     const stage = e.target.getStage();
     const pos = stage.getPointerPosition();
-
     const lastLine = { ...lines[lines.length - 1] };
     lastLine.points = lastLine.points.concat(normalizePoint(pos));
     setLines([...lines.slice(0, -1), lastLine]);
   };
 
-  const handlePointerUp = async () => {
+  const handlePointerUp = () => {
     isDrawing.current = false;
     const lastLine = lines[lines.length - 1];
     if (!lastLine || !shareCode) return;
 
-    // Send via WebSocket
-    if (socketRef.current) {
+    if (socketRef.current && socketRef.current.readyState === WebSocket.OPEN) {
       socketRef.current.send(JSON.stringify({
         type: "stroke",
         stroke: lastLine,
       }));
     }
-
-    // Optional: persist to DB later (batch save)
   };
 
   /* -------------------------
      Undo / Redo / Clear
   ------------------------- */
-  const handleUndo = async () => {
+  const handleUndo = () => {
     if (!lines.length) return;
     const last = lines[lines.length - 1];
-
     setLines(lines.slice(0, -1));
     setUndoneLines([last, ...undoneLines]);
 
-    // Send via WebSocket with ID
-    if (socketRef.current) {
+    if (socketRef.current && socketRef.current.readyState === WebSocket.OPEN) {
       socketRef.current.send(JSON.stringify({ type: "delete", lineId: last.id }));
     }
-
-    // Optional: remove last line from DB
   };
 
   const handleRedo = () => {
@@ -180,16 +169,13 @@ function MapCanvas({ imageSrc, lines, setLines, undoneLines, setUndoneLines, sha
     setUndoneLines(rest);
   };
 
-  const handleClear = async () => {
+  const handleClear = () => {
     setLines([]);
     setUndoneLines([]);
 
-    // Send via WebSocket
-    if (socketRef.current) {
+    if (socketRef.current && socketRef.current.readyState === WebSocket.OPEN) {
       socketRef.current.send(JSON.stringify({ type: "clear" }));
     }
-
-    // Optional: clear map in DB
   };
 
   /* -------------------------
@@ -215,24 +201,12 @@ function MapCanvas({ imageSrc, lines, setLines, undoneLines, setUndoneLines, sha
       <div className="map-canvas-controls">
         <label>
           Brush Color:
-          <input
-            type="color"
-            value={brushColor}
-            onChange={(e) => setBrushColor(e.target.value)}
-            style={{ marginLeft: "4px" }}
-          />
+          <input type="color" value={brushColor} onChange={(e) => setBrushColor(e.target.value)} style={{ marginLeft: "4px" }} />
         </label>
 
         <label>
           Brush Width:
-          <input
-            type="number"
-            min="1"
-            max="50"
-            value={brushWidth}
-            onChange={(e) => setBrushWidth(Number(e.target.value))}
-            style={{ width: "60px", marginLeft: "4px" }}
-          />
+          <input type="number" min="1" max="50" value={brushWidth} onChange={(e) => setBrushWidth(Number(e.target.value))} style={{ width: "60px", marginLeft: "4px" }} />
         </label>
 
         <button onClick={handleUndo} disabled={!lines.length}>Undo</button>
@@ -262,9 +236,9 @@ function MapCanvas({ imageSrc, lines, setLines, undoneLines, setUndoneLines, sha
             />
           )}
 
-          {lines.map((line, i) => (
+          {lines.map((line) => (
             <Line
-              key={line.id} // <--- changed key to unique ID
+              key={line.id}
               points={denormalizePoints(line.points)}
               stroke={line.color}
               strokeWidth={line.width * scale}
@@ -280,18 +254,16 @@ function MapCanvas({ imageSrc, lines, setLines, undoneLines, setUndoneLines, sha
 }
 
 /* =========================
-   ColMap Page (UNCHANGED)
-  ========================= */
+   ColMap Page
+   ========================= */
 export function ColMap() {
   const raidNames = Object.keys(MAPS);
   const [selectedRaid, setSelectedRaid] = useState(raidNames[0]);
-
   const encounterNames = useMemo(() => Object.keys(MAPS[selectedRaid] || {}), [selectedRaid]);
   const [selectedEncounter, setSelectedEncounter] = useState(encounterNames[0]);
 
   const [lines, setLines] = useState([]);
   const [undoneLines, setUndoneLines] = useState([]);
-
   const [shareCode, setShareCode] = useState("");
   const [joinCode, setJoinCode] = useState("");
 
@@ -305,7 +277,6 @@ export function ColMap() {
 
   const handleGenerateCode = async () => {
     if (!selectedRaid || !selectedEncounter) return;
-
     try {
       const res = await fetch("/api/maps", {
         method: "POST",
@@ -325,12 +296,10 @@ export function ColMap() {
 
   const handleJoin = async () => {
     if (!joinCode) return;
-
     try {
       const res = await fetch(`/api/maps/${joinCode}`);
       if (!res.ok) throw new Error("Invalid code");
       const { raid, encounter, lines: savedLines } = await res.json();
-
       setSelectedRaid(raid);
       setSelectedEncounter(encounter);
       setLines(savedLines);
