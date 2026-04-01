@@ -4,8 +4,6 @@ const bcrypt = require("bcryptjs");
 const cookieParser = require("cookie-parser");
 const { v4: uuidv4 } = require("uuid");
 const path = require("path");
-require("dotenv").config();
-
 const DB = require("./database.js");
 const { peerProxy } = require("./peerProxy.js");
 const http = require("http"); // needed to create server for WS
@@ -190,6 +188,29 @@ apiRouter.get("/insult", async (_req, res) => {
   } catch (err) {
     console.error("Insult API error:", err);
     res.status(500).json({ error: "Unable to insult at this time." });
+  }
+});
+
+apiRouter.put("/maps/:code", requireAuth, async (req, res) => {
+  const { code } = req.params;
+  const { lines } = req.body;
+
+  if (!Array.isArray(lines)) {
+    return res.status(400).json({ error: "Invalid lines data" });
+  }
+
+  const map = await DB.getMap(code);
+  if (!map) {
+    return res.status(404).json({ error: "Map not found" });
+  }
+
+  try {
+    await DB.updateMap(code, lines);
+
+    res.json({ success: true });
+  } catch (err) {
+    console.error("Save map error:", err);
+    res.status(500).json({ error: "Failed to save map" });
   }
 });
 

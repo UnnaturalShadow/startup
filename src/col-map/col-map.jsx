@@ -261,6 +261,7 @@ function MapCanvas({ imageSrc, lines, setLines, undoneLines, setUndoneLines, sha
   );
 }
 
+
 /* =========================
    ColMap Page
    ========================= */
@@ -282,6 +283,28 @@ export function ColMap() {
   }, [selectedRaid, encounterNames]);
 
   const currentMap = MAPS[selectedRaid]?.[selectedEncounter];
+
+  const handleSave = async () => {
+  if (!shareCode) {
+    alert("Generate a code first before saving.");
+    return;
+  }
+
+  try {
+    const res = await fetch(`/api/maps/${shareCode}`, {
+      method: "PUT", // important
+      headers: { "Content-Type": "application/json" },
+      body: JSON.stringify({ lines }),
+    });
+
+    if (!res.ok) throw new Error("Failed to save");
+
+    alert("Map saved!");
+  } catch (err) {
+    console.error("Save error:", err);
+    alert("Error saving map");
+  }
+};
 
   const handleGenerateCode = async () => {
     if (!selectedRaid || !selectedEncounter) return;
@@ -370,6 +393,9 @@ export function ColMap() {
             onChange={(e) => setJoinCode(e.target.value.toUpperCase())}
           />
           <button onClick={handleJoin}>Join</button>
+          <button onClick={handleSave} disabled={!shareCode}>
+            Save
+          </button>
         </div>
       </section>
     </main>
