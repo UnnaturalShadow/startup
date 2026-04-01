@@ -196,3 +196,23 @@ main.col-map-page {
     text-align: center;
   }
 } 
+
+
+
+.save-status {
+  margin-top: 6px;
+  font-size: 0.9rem;
+  font-weight: 500;
+}
+
+.save-status.saving {
+  color: #555;
+}
+
+.save-status.saved {
+  color: #2e7d32; /* green */
+}
+
+.save-status.error {
+  color: #c62828; /* red */
+}

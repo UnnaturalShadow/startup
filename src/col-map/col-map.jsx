@@ -276,6 +276,9 @@ export function ColMap() {
   const [shareCode, setShareCode] = useState("");
   const [joinCode, setJoinCode] = useState("");
 
+  // ----- NEW STATE -----
+  const [saveStatus, setSaveStatus] = useState(""); // "", "saving", "saved", "error"
+
   useEffect(() => {
     setSelectedEncounter(encounterNames[0]);
     setLines([]);
@@ -284,27 +287,32 @@ export function ColMap() {
 
   const currentMap = MAPS[selectedRaid]?.[selectedEncounter];
 
+  // ----- UPDATED handleSave -----
   const handleSave = async () => {
-  if (!shareCode) {
-    alert("Generate a code first before saving.");
-    return;
-  }
+    if (!shareCode) {
+      setSaveStatus("error");
+      return;
+    }
 
-  try {
-    const res = await fetch(`/api/maps/${shareCode}`, {
-      method: "PUT", // important
-      headers: { "Content-Type": "application/json" },
-      body: JSON.stringify({ lines }),
-    });
+    setSaveStatus("saving");
 
-    if (!res.ok) throw new Error("Failed to save");
+    try {
+      const res = await fetch(`/api/maps/${shareCode}`, {
+        method: "PUT",
+        headers: { "Content-Type": "application/json" },
+        body: JSON.stringify({ lines }),
+      });
 
-    alert("Map saved!");
-  } catch (err) {
-    console.error("Save error:", err);
-    alert("Error saving map");
-  }
-};
+      if (!res.ok) throw new Error("Failed to save");
+
+      setSaveStatus("saved");
+      setTimeout(() => setSaveStatus(""), 2000); // auto-hide
+    } catch (err) {
+      console.error("Save error:", err);
+      setSaveStatus("error");
+      setTimeout(() => setSaveStatus(""), 3000);
+    }
+  };
 
   const handleGenerateCode = async () => {
     if (!selectedRaid || !selectedEncounter) return;
@@ -337,7 +345,7 @@ export function ColMap() {
       setUndoneLines([]);
       setShareCode(joinCode);
     } catch (err) {
-      alert(err.message);
+      setSaveStatus("error");
     }
   };
 
@@ -393,9 +401,16 @@ export function ColMap() {
             onChange={(e) => setJoinCode(e.target.value.toUpperCase())}
           />
           <button onClick={handleJoin}>Join</button>
-          <button onClick={handleSave} disabled={!shareCode}>
-            Save
-          </button>
+          <button onClick={handleSave} disabled={!shareCode}>Save</button>
+
+          {/* ----- NEW SAVE STATUS NOTIFICATION ----- */}
+          {saveStatus && (
+            <div className={`save-status ${saveStatus}`} style={{ marginTop: "0.25rem" }}>
+              {saveStatus === "saving" && "Saving..."}
+              {saveStatus === "saved" && "Saved!"}
+              {saveStatus === "error" && "Error saving"}
+            </div>
+          )}
         </div>
       </section>
     </main>
