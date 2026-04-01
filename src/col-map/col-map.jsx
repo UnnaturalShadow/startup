@@ -163,11 +163,19 @@ function MapCanvas({ imageSrc, lines, setLines, undoneLines, setUndoneLines, sha
   };
 
   const handleRedo = () => {
-    if (!undoneLines.length) return;
-    const [first, ...rest] = undoneLines;
-    setLines([...lines, first]);
-    setUndoneLines(rest);
-  };
+  if (!undoneLines.length) return;
+
+  const [first, ...rest] = undoneLines;
+  setLines([...lines, first]);
+  setUndoneLines(rest);
+
+  if (socketRef.current && socketRef.current.readyState === WebSocket.OPEN) {
+    socketRef.current.send(JSON.stringify({
+      type: "stroke",   // reuse stroke event
+      stroke: first,
+    }));
+  }
+};
 
   const handleClear = () => {
     setLines([]);
