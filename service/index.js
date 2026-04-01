@@ -20,7 +20,6 @@ app.use(cors({
   origin: "http://startup.unnaturalshadow.com",
   credentials: true
 }));
-
 app.use(express.static("public"));
 
 // =========================
@@ -48,26 +47,16 @@ apiRouter.post("/register", async (req, res) => {
   const { email, password } = req.body;
 
   const existingUser = await DB.getUser(email);
-  if (existingUser) {
-    return res.status(400).json({ message: "User already exists" });
-  }
+  if (existingUser) return res.status(400).json({ message: "User already exists" });
 
   const passwordHash = await bcrypt.hash(password, 10);
 
-  await DB.addUser({
-    email,
-    passwordHash,
-    createdAt: new Date(),
-  });
+  await DB.addUser({ email, passwordHash, createdAt: new Date() });
 
   const sessionId = uuidv4();
   await DB.createSession({ sessionId, email });
 
-  res.cookie("sessionId", sessionId, {
-    httpOnly: true,
-    sameSite: "lax",
-  });
-
+  res.cookie("sessionId", sessionId, { httpOnly: true, sameSite: "lax" });
   res.json({ message: "Registration successful", email });
 });
 
@@ -75,32 +64,21 @@ apiRouter.post("/login", async (req, res) => {
   const { email, password } = req.body;
 
   const user = await DB.getUser(email);
-  if (!user) {
-    return res.status(400).json({ message: "User not found" });
-  }
+  if (!user) return res.status(400).json({ message: "User not found" });
 
   const valid = await bcrypt.compare(password, user.passwordHash);
-  if (!valid) {
-    return res.status(401).json({ message: "Invalid password" });
-  }
+  if (!valid) return res.status(401).json({ message: "Invalid password" });
 
   const sessionId = uuidv4();
   await DB.createSession({ sessionId, email });
 
-  res.cookie("sessionId", sessionId, {
-    httpOnly: true,
-    sameSite: "lax",
-  });
-
+  res.cookie("sessionId", sessionId, { httpOnly: true, sameSite: "lax" });
   res.json({ message: "Login successful", email });
 });
 
 apiRouter.post("/logout", async (req, res) => {
   const sessionId = req.cookies.sessionId;
-
-  if (sessionId) {
-    await DB.deleteSession(sessionId);
-  }
+  if (sessionId) await DB.deleteSession(sessionId);
 
   res.clearCookie("sessionId");
   res.json({ message: "Logout successful" });
@@ -108,7 +86,6 @@ apiRouter.post("/logout", async (req, res) => {
 
 apiRouter.get("/session", async (req, res) => {
   const sessionId = req.cookies.sessionId;
-
   if (!sessionId) return res.status(401).json({ loggedIn: false });
 
   const session = await DB.getSession(sessionId);
@@ -117,17 +94,37 @@ apiRouter.get("/session", async (req, res) => {
   res.json({ loggedIn: true, email: session.email });
 });
 
+//insult
+apiRouter.get("/insult", async (_req, res) => {
+  try {
+    const response = await fetch(
+      "https://evilinsult.com/generate_insult.php?lang=en&type=json"
+    );
+
+    if (!response.ok) {
+      throw new Error(`Insult API returned status ${response.status}`);
+    }
+
+    const data = await response.json();
+
+    if (!data || !data.insult) {
+      throw new Error("Invalid response from insult API");
+    }
+
+    res.json({ insult: data.insult });
+  } catch (err) {
+    console.error("Insult API error:", err.message);
+    res.status(500).json({ error: "Unable to fetch insult at this time." });
+  }
+});
+
 // ----- Maps -----
 apiRouter.post("/maps", requireAuth, async (req, res) => {
-  const { raid, encounter, lines } = req.body;
+  const { raid, encounter, lines, background } = req.body;
 
-  if (!raid || !encounter) {
-    return res.status(400).json({ error: "Missing raid or encounter" });
-  }
+  if (!raid || !encounter) return res.status(400).json({ error: "Missing raid or encounter" });
 
-  let code;
-  let exists;
-
+  let code, exists;
   do {
     code = Math.random().toString(36).substring(2, 8).toUpperCase();
     exists = await DB.getMap(code);
@@ -137,6 +134,7 @@ apiRouter.post("/maps", requireAuth, async (req, res) => {
     code,
     raid,
     encounter,
+    background: background || "", // <-- NEW: store chosen background
     lines: lines || [],
     owner: req.userEmail,
     createdAt: new Date(),
@@ -152,9 +150,27 @@ apiRouter.get("/maps/:code", requireAuth, async (req, res) => {
   res.json(map);
 });
 
+apiRouter.put("/maps/:code", requireAuth, async (req, res) => {
+  const { code } = req.params;
+  const { lines, background } = req.body;
+
+  if (!Array.isArray(lines)) return res.status(400).json({ error: "Invalid lines data" });
+
+  const map = await DB.getMap(code);
+  if (!map) return res.status(404).json({ error: "Map not found" });
+
+  try {
+    await DB.updateMap(code, lines, background);
+    res.json({ success: true });
+  } catch (err) {
+    console.error("Save map error:", err);
+    res.status(500).json({ error: "Failed to save map" });
+  }
+});
+
+// Optional endpoints for single-line updates
 apiRouter.post("/maps/:code/lines", requireAuth, async (req, res) => {
   const { points, color, width } = req.body;
-
   if (!points || !points.length) return res.status(400).json({ error: "Invalid line data" });
 
   const map = await DB.getMap(req.params.code);
@@ -162,7 +178,6 @@ apiRouter.post("/maps/:code/lines", requireAuth, async (req, res) => {
 
   const newLines = [...(map.lines || []), { points, color, width }];
   await DB.updateMap(req.params.code, newLines);
-
   res.json({ success: true });
 });
 
@@ -172,54 +187,13 @@ apiRouter.delete("/maps/:code/lines/last", requireAuth, async (req, res) => {
 
   const newLines = (map.lines || []).slice(0, -1);
   await DB.updateMap(req.params.code, newLines);
-
   res.json({ success: true });
-});
-
-apiRouter.get("/insult", async (_req, res) => {
-  try {
-    const response = await fetch("https://evilinsult.com/generate_insult.php?lang=en&type=json");
-    if (!response.ok) throw new Error(`External API returned ${response.status}`);
-
-    const data = await response.json();
-    if (!data.insult) throw new Error("Invalid response from insult API");
-
-    res.json({ insult: data.insult });
-  } catch (err) {
-    console.error("Insult API error:", err);
-    res.status(500).json({ error: "Unable to insult at this time." });
-  }
-});
-
-apiRouter.put("/maps/:code", requireAuth, async (req, res) => {
-  const { code } = req.params;
-  const { lines } = req.body;
-
-  if (!Array.isArray(lines)) {
-    return res.status(400).json({ error: "Invalid lines data" });
-  }
-
-  const map = await DB.getMap(code);
-  if (!map) {
-    return res.status(404).json({ error: "Map not found" });
-  }
-
-  try {
-    await DB.updateMap(code, lines);
-
-    res.json({ success: true });
-  } catch (err) {
-    console.error("Save map error:", err);
-    res.status(500).json({ error: "Failed to save map" });
-  }
 });
 
 // =========================
 // Fallback
 // =========================
-app.use((_req, res) => {
-  res.sendFile("index.html", { root: "public" });
-});
+app.use((_req, res) => res.sendFile("index.html", { root: "public" }));
 
 // =========================
 // Start HTTP server and attach WebSocket proxy

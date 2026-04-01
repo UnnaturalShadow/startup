@@ -3,7 +3,6 @@ const config = require('./dbConfig.json');
 
 const url = `mongodb+srv://${config.username}:${config.password}@${config.hostname}`;
 const client = new MongoClient(url);
-
 const db = client.db('raid');
 
 const userCollection = db.collection('user');
@@ -40,10 +39,7 @@ async function addUser(user) {
 }
 
 async function updateUser(user) {
-  await userCollection.updateOne(
-    { email: user.email },
-    { $set: user }
-  );
+  await userCollection.updateOne({ email: user.email }, { $set: user });
 }
 
 // =========================
@@ -72,11 +68,16 @@ function getMap(code) {
   return mapCollection.findOne({ code });
 }
 
-async function updateMap(code, lines) {
-  await mapCollection.updateOne(
-    { code },
-    { $set: { lines, updatedAt: new Date() } }
-  );
+/**
+ * Updates map lines and optional background
+ * @param {string} code - map code
+ * @param {Array} lines - array of line objects
+ * @param {string} [background] - optional background image
+ */
+async function updateMap(code, lines, background) {
+  const updateObj = { lines, updatedAt: new Date() };
+  if (background !== undefined) updateObj.background = background;
+  await mapCollection.updateOne({ code }, { $set: updateObj });
 }
 
 // =========================
