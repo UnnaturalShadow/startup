@@ -24,7 +24,7 @@ export function About() {
       <p>
         Please note that the insults page calls out to the Evil Insult Generator api, which produces a number of comedic insults, as well as some truly 
         vile and explicit insults. The creator of this website does not necissarily condone the content of the insults supplied, and in most cases does 
-        not believe that the insults are actually true. In the event that you are exposed to profane language when you do not want to, I apologize. You
+        not believe that the insults are actually true. In the event that you are exposed to profane language when you do not want to be, I apologize. You
         have been warned.
       </p>
       <p>
