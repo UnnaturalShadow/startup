@@ -35,48 +35,54 @@ function MapCanvas({ imageSrc, lines, setLines, undoneLines, setUndoneLines, sha
   const [stageSize, setStageSize] = useState({ width: 1000, height: 600 });
 
   /* -------------------------
-     WebSocket Connection
-  ------------------------- */
-  useEffect(() => {
-    if (!shareCode) return;
+   WebSocket Connection
+------------------------- */
+useEffect(() => {
+  if (!shareCode) return;
 
-    const protocol = window.location.protocol === "https:" ? "wss" : "ws";
-    const socket = new WebSocket(`${protocol}://${window.location.hostname}:4000`); // <--- explicit port
+  // Determine protocol
+  const protocol = window.location.protocol === "https:" ? "wss" : "ws";
+  let port = window.location.port ? `:${window.location.port}` : "";
+  const socket = new WebSocket(`${protocol}://${window.location.hostname}${port}/ws`);
+  socketRef.current = socket;
 
-    socketRef.current = socket;
-
-    socket.onopen = () => {
-      socket.send(JSON.stringify({
+  socket.onopen = () => {
+    socket.send(
+      JSON.stringify({
         type: "join",
         roomId: shareCode,
-      }));
-    };
+      })
+    );
+  };
 
-    socket.onmessage = (event) => {
-      const msg = JSON.parse(event.data);
+  socket.onmessage = (event) => {
+    const msg = JSON.parse(event.data);
 
-      if (msg.type === "stroke") {
-        const stroke = msg.stroke.id ? msg.stroke : { ...msg.stroke, id: uuidv4() };
-        setLines((prev) => [...prev, stroke]);
-      }
+    if (msg.type === "stroke") {
+      const stroke = msg.stroke.id ? msg.stroke : { ...msg.stroke, id: uuidv4() };
+      setLines((prev) => [...prev, stroke]);
+    }
 
-      if (msg.type === "delete") {
-        setLines(prev => prev.filter(line => line.id !== msg.lineId));
-      }
+    if (msg.type === "delete") {
+      setLines((prev) => prev.filter((line) => line.id !== msg.lineId));
+    }
 
-      if (msg.type === "clear") {
-        setLines([]);
-        setUndoneLines([]);
-      }
-    };
+    if (msg.type === "clear") {
+      setLines([]);
+      setUndoneLines([]);
+    }
+  };
 
-    socket.onclose = () => {
-      socketRef.current = null;
-    };
+  socket.onclose = () => {
+    socketRef.current = null;
+  };
 
-    return () => socket.close();
-  }, [shareCode, setLines, setUndoneLines]);
-
+  return () => {
+    if (socket.readyState === WebSocket.OPEN || socket.readyState === WebSocket.CONNECTING) {
+      socket.close();
+    }
+  };
+}, [shareCode, setLines, setUndoneLines]);
   /* -------------------------
      Resize Stage Responsively
   ------------------------- */
