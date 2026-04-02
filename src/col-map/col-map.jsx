@@ -32,8 +32,18 @@ function MapCanvas({ imageSrc, lines, setLines, undoneLines, setUndoneLines, sha
     const socket = new WebSocket(`${protocol}://${window.location.hostname}${port}/ws`);
     socketRef.current = socket;
 
-    socket.onopen = () => {
+    socket.onopen = async () => {
       socket.send(JSON.stringify({ type: "join", roomId: shareCode }));
+      try {
+        const res = await fetch(`/api/maps/${shareCode}`);
+        if (res.ok) {
+          const data = await res.json();
+          setLines(data.lines || []);
+          setUndoneLines([]);
+        }
+      } catch (err) {
+        console.error("Failed to sync map after join", err);
+      }
     };
 
     socket.onmessage = (event) => {
@@ -171,11 +181,74 @@ export function ColMap() {
   const [joinCode, setJoinCode] = useState("");
   const [saveStatus, setSaveStatus] = useState("");
 
+  const saveTimeoutRef = useRef(null);
+
+  useEffect(() => {
+    const savedCode = localStorage.getItem("mapCode");
+    if (!savedCode) return;
+
+    const loadMap = async () => {
+      try {
+        const res = await fetch(`/api/maps/${savedCode}`);
+        if (!res.ok) return;
+
+        const { raid, encounter, lines: savedLines } = await res.json();
+
+        setSelectedRaid(raid);
+        setSelectedEncounter(encounter);
+        setLines(savedLines || []);
+        setUndoneLines([]);
+        setShareCode(savedCode);
+      } catch (err) {
+        console.error("Failed to restore map", err);
+      }
+    };
+
+    loadMap();
+  }, []);
+
+  useEffect(() => {
+    if (shareCode) {
+      localStorage.setItem("mapCode", shareCode);
+    }
+  }, [shareCode]);
+
   useEffect(() => {
     setSelectedEncounter(encounterNames[0]);
     setLines([]);
     setUndoneLines([]);
   }, [selectedRaid, encounterNames]);
+
+  // ✅ Autosave
+  useEffect(() => {
+    if (!shareCode) return;
+
+    if (saveTimeoutRef.current) {
+      clearTimeout(saveTimeoutRef.current);
+    }
+
+    saveTimeoutRef.current = setTimeout(async () => {
+      try {
+        await fetch(`/api/maps/${shareCode}`, {
+          method: "PUT",
+          headers: { "Content-Type": "application/json" },
+          body: JSON.stringify({
+            lines,
+            raid: selectedRaid,
+            encounter: selectedEncounter,
+          }),
+        });
+      } catch (err) {
+        console.error("Autosave failed:", err);
+      }
+    }, 500);
+
+    return () => {
+      if (saveTimeoutRef.current) {
+        clearTimeout(saveTimeoutRef.current);
+      }
+    };
+  }, [lines, shareCode, selectedRaid, selectedEncounter]);
 
   const currentMap = MAPS[selectedRaid]?.[selectedEncounter];
 
