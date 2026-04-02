@@ -107,8 +107,8 @@ For this deliverable I added a backend endpoint that fetches a random insult fro
 - [x] **Static middleware** – Frontend served via Express static middleware.  
 - [x] **Backend service endpoints** – Endpoint implemented and tested; returns a single random insult each call.  
 - [x] **Frontend calls service endpoints** – Logistics of code generation and line tracking as well as login auth are now handled by api endpoints and stored in the backend.  
-- [ ] **Supports registration, login, logout, and restricted endpoint** – Register/login/logout remain functional, now handled by endpoint calls, auth data is stored in backend for now. Maps page is now restricted behind login. 
-- [ ] **Uses BCrypt to hash passwords** – Passwords secured!
+- [x] **Supports registration, login, logout, and restricted endpoint** – Register/login/logout remain functional, now handled by endpoint calls, auth data is stored in backend for now. Maps page is now restricted behind login. 
+- [x] **Uses BCrypt to hash passwords** – Passwords secured!
 
 
 ## DB/Login deliverable
@@ -118,3 +118,15 @@ For this deliverable I now store maps with their associated drawings and codes i
 - [x] I completed the prerequisites for this deliverable (Simon deployed, GitHub link, Git commits)
 - [x] **Stores data in MongoDB** - Stores map information (image, lines, code). See database.js
 - [x] **Use MongoDB to store credentials** - Stores user and credentials. See database.js
+
+## WebSocket
+
+For this deliverable, I implemented a WebSocket-based system to synchronize drawing data between users in real time, enabling collaborative map editing.
+
+- [x] I completed the prerequisites for this deliverable (Simon deployed, GitHub link, Git commits)
+- [x] **Backend listens for WebSocket connections** – See `index.js`
+- [x] **Frontend establishes a WebSocket connection** – See `colMap.jsx`
+- [x] **Data transmitted over WebSocket** – Drawing events (line updates) are sent through the socket (see `index.js`)
+- [x] **WebSocket data rendered in frontend** – Incoming updates are applied immediately, keeping canvases in sync across users
+
+Real-time drawing synchronization is fully functional. I'm especially pleased with how responsive and seamless the collaboration feels, and I plan to expand this further as more map data is added.
